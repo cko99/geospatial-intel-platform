@@ -9,96 +9,215 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --glass-bg:rgba(8,15,28,.72);--glass-border:rgba(100,200,255,.12);
-  --panel-bg:rgba(6,12,24,.92);--accent-cyan:#00d4ff;--accent-green:#00ff9d;
-  --accent-amber:#ffb547;--text-primary:#e8f4ff;--text-secondary:rgba(180,210,255,.65);
-  --text-muted:rgba(120,160,200,.45);--grid-line:rgba(100,160,255,.07);
-  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
-}
-html,body{height:100%;overflow:hidden;background:#020810;color:var(--text-primary);font-family:var(--font);}
-#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
 
-/* HEADER */
-#header{position:relative;z-index:100;display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;height:50px;background:rgba(4,10,22,.97);
-  border-bottom:1px solid var(--glass-border);flex-shrink:0;}
-.hdr-logo{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:600;
-  color:var(--accent-cyan);letter-spacing:.1em;text-transform:uppercase;}
-.logo-box{width:26px;height:26px;background:linear-gradient(135deg,#003d5c,#006080);
-  border:1px solid var(--accent-cyan);border-radius:5px;display:flex;align-items:center;
-  justify-content:center;font-size:13px;}
-.hdr-title{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text-primary);text-align:center;}
+/* ── RESET ────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ── CSS VARIABLES ───────────────────────────────────── */
+:root{
+  --glass-border:rgba(100,200,255,.12);
+  --panel-bg:rgba(6,12,24,.92);
+  --accent-cyan:#00d4ff;
+  --accent-green:#00ff9d;
+  --text-primary:#e8f4ff;
+  --text-secondary:rgba(180,210,255,.65);
+  --text-muted:rgba(120,160,200,.45);
+  --font:'Space Grotesk',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --header-h:50px;
+  --kpi-h:58px;
+  --fbar-h:36px;
+}
+
+/* ── BASE ────────────────────────────────────────────── */
+html{height:100%;}
+body{
+  display:flex;flex-direction:column;
+  height:100vh;min-height:0;
+  overflow:hidden;
+  background:#020810;
+  color:var(--text-primary);
+  font-family:var(--font);
+}
+#bg-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;
+}
+
+/* ── HEADER ──────────────────────────────────────────── */
+#header{
+  position:relative;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;height:var(--header-h);flex-shrink:0;
+  background:rgba(4,10,22,.97);
+  border-bottom:1px solid var(--glass-border);
+}
+.hdr-logo{
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:600;color:var(--accent-cyan);
+  letter-spacing:.1em;text-transform:uppercase;
+  white-space:nowrap;
+}
+.logo-box{
+  width:24px;height:24px;flex-shrink:0;
+  background:linear-gradient(135deg,#003d5c,#006080);
+  border:1px solid var(--accent-cyan);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+}
+.hdr-title{
+  font-size:12px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-primary);
+  text-align:center;flex:1;padding:0 8px;
+}
 .hdr-title em{color:var(--accent-cyan);font-style:normal;}
-.hdr-right{display:flex;align-items:center;gap:10px;}
-.dot-live{width:6px;height:6px;border-radius:50%;background:var(--accent-green);animation:pulse 2s infinite;flex-shrink:0;}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,157,.4)}50%{opacity:.7;box-shadow:0 0 0 4px rgba(0,255,157,0)}}
-.btn{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);color:var(--accent-cyan);
-  border-radius:6px;padding:4px 12px;font-size:10px;font-family:var(--font);cursor:pointer;
-  letter-spacing:.06em;text-transform:uppercase;transition:all .2s;}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.dot-live{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent-green);flex-shrink:0;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,157,.4)}
+  50%{opacity:.7;box-shadow:0 0 0 4px rgba(0,255,157,0)}
+}
+.btn{
+  background:rgba(0,212,255,.08);
+  border:1px solid rgba(0,212,255,.25);
+  color:var(--accent-cyan);border-radius:6px;
+  padding:4px 10px;font-size:9px;
+  font-family:var(--font);cursor:pointer;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:all .2s;white-space:nowrap;
+}
 .btn:hover{background:rgba(0,212,255,.18);border-color:var(--accent-cyan);}
 
-/* KPI */
-#kpi-bar{position:relative;z-index:100;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
-  padding:6px 14px;background:rgba(4,10,22,.85);border-bottom:1px solid var(--glass-border);flex-shrink:0;}
-.kpi{background:rgba(0,30,60,.5);border:1px solid rgba(0,150,200,.15);border-radius:7px;
-  padding:7px 11px;display:flex;align-items:center;gap:9px;position:relative;overflow:hidden;transition:border-color .2s;}
-.kpi:hover{border-color:rgba(0,212,255,.35);}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent-cyan),transparent);opacity:.35;}
-.kpi-ico{font-size:18px;flex-shrink:0;}
-.kpi-v{font-size:18px;font-weight:700;color:var(--text-primary);line-height:1;font-family:var(--mono);}
-.kpi-l{font-size:9px;color:var(--text-secondary);letter-spacing:.08em;text-transform:uppercase;margin-top:1px;}
+/* ── KPI BAR ─────────────────────────────────────────── */
+#kpi-bar{
+  position:relative;z-index:100;flex-shrink:0;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+  padding:5px 12px;
+  background:rgba(4,10,22,.85);
+  border-bottom:1px solid var(--glass-border);
+}
+.kpi{
+  background:rgba(0,30,60,.5);
+  border:1px solid rgba(0,150,200,.15);
+  border-radius:7px;padding:6px 10px;
+  display:flex;align-items:center;gap:8px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s;
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent-cyan),transparent);
+  opacity:.35;
+}
+.kpi-ico{font-size:16px;flex-shrink:0;}
+.kpi-v{
+  font-size:16px;font-weight:700;
+  color:var(--text-primary);line-height:1;
+  font-family:var(--mono);
+}
+.kpi-l{
+  font-size:8px;color:var(--text-secondary);
+  letter-spacing:.07em;text-transform:uppercase;margin-top:2px;
+}
 
-/* FILTER */
-#fbar{position:relative;z-index:100;display:flex;align-items:center;gap:10px;
-  padding:5px 14px;background:rgba(4,10,22,.8);border-bottom:1px solid var(--glass-border);flex-shrink:0;}
-.flbl{font-size:9px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
-.pills{display:flex;gap:5px;flex-wrap:wrap;}
-.pill{padding:3px 10px;border-radius:20px;font-size:9px;font-weight:500;
-  border:1px solid rgba(100,160,255,.2);background:rgba(0,20,50,.5);color:var(--text-secondary);
-  cursor:pointer;transition:all .18s;letter-spacing:.04em;white-space:nowrap;}
+/* ── FILTER BAR ──────────────────────────────────────── */
+#fbar{
+  position:relative;z-index:100;flex-shrink:0;
+  display:flex;align-items:center;gap:8px;
+  padding:4px 12px;
+  background:rgba(4,10,22,.8);
+  border-bottom:1px solid var(--glass-border);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+#fbar::-webkit-scrollbar{display:none;}
+.flbl{
+  font-size:8px;color:var(--text-secondary);
+  text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;
+}
+.pills{display:flex;gap:4px;flex-wrap:nowrap;}
+.pill{
+  padding:3px 9px;border-radius:20px;font-size:8px;font-weight:500;
+  border:1px solid rgba(100,160,255,.2);
+  background:rgba(0,20,50,.5);color:var(--text-secondary);
+  cursor:pointer;transition:all .18s;
+  letter-spacing:.04em;white-space:nowrap;flex-shrink:0;
+}
 .pill:hover{border-color:rgba(0,212,255,.5);color:var(--text-primary);}
-.pill.active{background:rgba(0,212,255,.12);border-color:var(--accent-cyan);color:var(--accent-cyan);}
+.pill.active{
+  background:rgba(0,212,255,.12);
+  border-color:var(--accent-cyan);color:var(--accent-cyan);
+}
 
-/* MAIN */
-#main{display:grid;grid-template-columns:238px 1fr 258px;flex:1;min-height:0;position:relative;z-index:50;}
+/* ── MAIN 3-PANEL LAYOUT (desktop) ──────────────────── */
+#main{
+  display:grid;
+  grid-template-columns:238px 1fr 258px;
+  grid-template-rows:1fr;
+  flex:1;min-height:0;
+  position:relative;z-index:50;
+}
 
-/* PANELS */
-.panel{background:var(--panel-bg);border-right:1px solid var(--glass-border);
-  overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;}
+/* ── PANELS ──────────────────────────────────────────── */
+.panel{
+  background:var(--panel-bg);
+  border-right:1px solid var(--glass-border);
+  overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;
+  min-height:0;
+}
 .panel:last-child{border-right:none;border-left:1px solid var(--glass-border);}
 .panel::-webkit-scrollbar{width:3px;}
 .panel::-webkit-scrollbar-thumb{background:rgba(0,212,255,.2);border-radius:2px;}
-.sec{padding:11px 13px;border-bottom:1px solid var(--glass-border);}
-.sec.grow{flex:1;border-bottom:none;}
-.sec-title{font-size:9px;font-weight:700;color:var(--accent-cyan);text-transform:uppercase;
-  letter-spacing:.15em;display:flex;align-items:center;gap:6px;margin-bottom:9px;}
+
+.sec{padding:10px 12px;border-bottom:1px solid var(--glass-border);}
+.sec.grow{flex:1;border-bottom:none;overflow-y:auto;}
+.sec-title{
+  font-size:8px;font-weight:700;color:var(--accent-cyan);
+  text-transform:uppercase;letter-spacing:.15em;
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+}
 .sec-title::after{content:'';flex:1;height:1px;background:var(--glass-border);}
 
-/* CHARTS */
+/* ── CHARTS ──────────────────────────────────────────── */
 .chart-wrap{position:relative;}
 
-/* AI */
+/* ── AI SEARCH ───────────────────────────────────────── */
 .ai-row{display:flex;gap:5px;align-items:center;margin-bottom:7px;}
-.ai-inp{flex:1;background:rgba(0,20,50,.6);border:1px solid rgba(0,150,200,.2);border-radius:5px;
-  padding:5px 9px;font-size:10px;color:var(--text-primary);font-family:var(--font);outline:none;transition:border-color .2s;}
+.ai-inp{
+  flex:1;background:rgba(0,20,50,.6);
+  border:1px solid rgba(0,150,200,.2);border-radius:5px;
+  padding:5px 9px;font-size:10px;color:var(--text-primary);
+  font-family:var(--font);outline:none;transition:border-color .2s;
+}
 .ai-inp:focus{border-color:var(--accent-cyan);}
 .ai-inp::placeholder{color:var(--text-muted);}
-.ai-go{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent-cyan);
-  border-radius:5px;padding:5px 8px;font-size:11px;cursor:pointer;transition:all .15s;}
+.ai-go{
+  background:rgba(0,212,255,.1);
+  border:1px solid rgba(0,212,255,.3);
+  color:var(--accent-cyan);border-radius:5px;
+  padding:5px 8px;font-size:11px;cursor:pointer;transition:all .15s;
+}
 .ai-go:hover{background:rgba(0,212,255,.2);}
 .ai-qs{display:flex;flex-direction:column;gap:3px;margin-bottom:7px;}
 .qs-lbl{font-size:8px;color:var(--text-muted);letter-spacing:.06em;margin-bottom:2px;}
-.ai-r{background:rgba(0,30,60,.5);border:1px solid rgba(0,150,200,.15);border-radius:5px;
-  padding:6px 9px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;}
+.ai-r{
+  background:rgba(0,30,60,.5);border:1px solid rgba(0,150,200,.15);
+  border-radius:5px;padding:6px 9px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;transition:all .15s;
+}
 .ai-r:hover{border-color:var(--accent-cyan);background:rgba(0,50,90,.5);}
 .ai-r-name{font-size:10px;font-weight:500;color:var(--text-primary);}
 .ai-r-meta{font-size:8px;color:var(--text-secondary);letter-spacing:.04em;}
-.chip{font-size:8px;padding:2px 6px;border-radius:10px;border:1px solid;font-weight:600;
-  text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;}
+
+/* ── CHIPS ───────────────────────────────────────────── */
+.chip{
+  font-size:8px;padding:2px 6px;border-radius:10px;border:1px solid;
+  font-weight:600;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;
+}
 .c-drone{color:#ff4d4d;border-color:rgba(255,77,77,.4);background:rgba(255,77,77,.08);}
 .c-gis{color:#4dff88;border-color:rgba(77,255,136,.4);background:rgba(77,255,136,.08);}
 .c-hydro{color:#4da6ff;border-color:rgba(77,166,255,.4);background:rgba(77,166,255,.08);}
@@ -107,75 +226,246 @@ html,body{height:100%;overflow:hidden;background:#020810;color:var(--text-primar
 .c-land{color:#4477ff;border-color:rgba(68,119,255,.4);background:rgba(68,119,255,.08);}
 .c-other{color:#aaaaaa;border-color:rgba(170,170,170,.4);background:rgba(170,170,170,.08);}
 
-/* MAP */
-#map-panel{position:relative;overflow:hidden;}
+/* ── MAP PANEL ───────────────────────────────────────── */
+#map-panel{position:relative;overflow:hidden;min-height:0;}
 #map{width:100%;height:100%;}
 .leaflet-container{background:#060e1e!important;}
-.map-ctrls{position:absolute;top:10px;right:10px;z-index:1000;display:flex;flex-direction:column;gap:4px;}
-.bm-btn{background:rgba(4,10,22,.92);border:1px solid var(--glass-border);color:var(--text-secondary);
-  border-radius:5px;padding:4px 9px;font-size:9px;cursor:pointer;font-family:var(--font);
-  letter-spacing:.05em;transition:all .15s;white-space:nowrap;}
+.map-ctrls{
+  position:absolute;top:10px;right:10px;z-index:1000;
+  display:flex;flex-direction:column;gap:4px;
+}
+.bm-btn{
+  background:rgba(4,10,22,.92);border:1px solid var(--glass-border);
+  color:var(--text-secondary);border-radius:5px;
+  padding:4px 9px;font-size:9px;cursor:pointer;
+  font-family:var(--font);letter-spacing:.05em;
+  transition:all .15s;white-space:nowrap;
+}
 .bm-btn:hover,.bm-btn.active{border-color:var(--accent-cyan);color:var(--accent-cyan);}
-.layer-btns{position:absolute;bottom:14px;left:10px;z-index:1000;display:flex;gap:5px;}
-.lay-btn{background:rgba(4,10,22,.92);border:1px solid var(--glass-border);color:var(--text-secondary);
-  border-radius:5px;padding:4px 10px;font-size:9px;cursor:pointer;font-family:var(--font);
-  letter-spacing:.06em;text-transform:uppercase;transition:all .15s;}
+.layer-btns{
+  position:absolute;bottom:14px;left:10px;z-index:1000;display:flex;gap:5px;
+}
+.lay-btn{
+  background:rgba(4,10,22,.92);border:1px solid var(--glass-border);
+  color:var(--text-secondary);border-radius:5px;
+  padding:4px 10px;font-size:9px;cursor:pointer;
+  font-family:var(--font);letter-spacing:.06em;
+  text-transform:uppercase;transition:all .15s;
+}
 .lay-btn.active{border-color:var(--accent-cyan);color:var(--accent-cyan);}
-/* Loading overlay on map */
-#map-loader{position:absolute;inset:0;z-index:999;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;background:rgba(2,8,16,.75);
-  font-size:11px;color:var(--accent-cyan);letter-spacing:.1em;gap:10px;pointer-events:none;}
+
+/* Loading overlay */
+#map-loader{
+  position:absolute;inset:0;z-index:999;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:rgba(2,8,16,.8);
+  font-size:11px;color:var(--accent-cyan);
+  letter-spacing:.1em;gap:10px;pointer-events:none;
+}
 #map-loader.hidden{display:none;}
-.loader-ring{width:28px;height:28px;border:2px solid rgba(0,212,255,.2);
-  border-top-color:var(--accent-cyan);border-radius:50%;animation:spin .8s linear infinite;}
+.loader-ring{
+  width:28px;height:28px;
+  border:2px solid rgba(0,212,255,.2);
+  border-top-color:var(--accent-cyan);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
 @keyframes spin{to{transform:rotate(360deg)}}
-.custom-popup .leaflet-popup-content-wrapper{background:rgba(4,12,28,.97);border:1px solid var(--glass-border);
-  border-radius:9px;box-shadow:0 4px 24px rgba(0,0,0,.6);padding:0;}
+
+/* Popups */
+.custom-popup .leaflet-popup-content-wrapper{
+  background:rgba(4,12,28,.97);border:1px solid var(--glass-border);
+  border-radius:9px;box-shadow:0 4px 24px rgba(0,0,0,.6);padding:0;
+}
 .custom-popup .leaflet-popup-tip{background:rgba(4,12,28,.97);}
 .pop{padding:11px 13px;font-family:var(--font);min-width:190px;max-width:240px;}
 .pop-name{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:5px;}
-.pop-row{display:flex;gap:6px;font-size:9px;color:var(--text-secondary);margin:3px 0;align-items:flex-start;}
+.pop-row{
+  display:flex;gap:6px;font-size:9px;color:var(--text-secondary);
+  margin:3px 0;align-items:flex-start;
+}
 .pop-row span:first-child{color:var(--text-muted);min-width:50px;flex-shrink:0;}
 .pop-row span:last-child{word-break:break-word;}
-.pop-web{display:inline-block;margin-top:8px;padding:3px 9px;border-radius:4px;
+.pop-web{
+  display:inline-block;margin-top:8px;padding:3px 9px;border-radius:4px;
   background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);
-  color:var(--accent-cyan);font-size:8px;letter-spacing:.06em;text-transform:uppercase;
-  text-decoration:none;}
+  color:var(--accent-cyan);font-size:8px;letter-spacing:.06em;
+  text-transform:uppercase;text-decoration:none;
+}
 .pop-web:hover{background:rgba(0,212,255,.18);}
 
-/* RIGHT PANEL */
-.csel{width:100%;background:rgba(0,20,50,.6);border:1px solid rgba(0,150,200,.2);
-  border-radius:5px;padding:5px 9px;font-size:10px;color:var(--text-primary);
-  font-family:var(--font);outline:none;cursor:pointer;}
+/* ── RIGHT PANEL ─────────────────────────────────────── */
+.csel{
+  width:100%;background:rgba(0,20,50,.6);
+  border:1px solid rgba(0,150,200,.2);border-radius:5px;
+  padding:5px 9px;font-size:10px;color:var(--text-primary);
+  font-family:var(--font);outline:none;cursor:pointer;
+}
 .csel option{background:#050d1f;}
-.c-profile{background:rgba(0,25,55,.4);border:1px solid rgba(0,150,200,.12);
-  border-radius:7px;padding:11px;margin-top:9px;}
-.p-logo{width:40px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:700;margin-bottom:7px;background:rgba(0,40,80,.6);
-  border:1px solid rgba(0,150,200,.2);}
-.p-name{font-size:12px;font-weight:600;color:var(--text-primary);}
-.p-detail{display:flex;flex-direction:column;gap:3px;margin-top:9px;}
+.c-profile{
+  background:rgba(0,25,55,.4);border:1px solid rgba(0,150,200,.12);
+  border-radius:7px;padding:11px;margin-top:9px;
+}
+.p-logo{
+  width:38px;height:38px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;margin-bottom:7px;
+  background:rgba(0,40,80,.6);border:1px solid rgba(0,150,200,.2);
+}
+.p-name{font-size:11px;font-weight:600;color:var(--text-primary);}
+.p-detail{display:flex;flex-direction:column;gap:3px;margin-top:8px;}
 .d-row{display:flex;gap:5px;font-size:9px;color:var(--text-secondary);}
-.d-lbl{color:var(--text-muted);min-width:44px;flex-shrink:0;}
-.p-desc{font-size:9px;color:var(--text-secondary);line-height:1.6;margin-top:7px;
-  padding-top:7px;border-top:1px solid var(--glass-border);}
+.d-lbl{color:var(--text-muted);min-width:42px;flex-shrink:0;}
+.p-desc{
+  font-size:9px;color:var(--text-secondary);line-height:1.6;
+  margin-top:7px;padding-top:7px;border-top:1px solid var(--glass-border);
+}
 .ctbl{width:100%;border-collapse:collapse;font-size:9px;}
-.ctbl th{color:var(--text-muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  font-size:8px;padding:4px 7px;border-bottom:1px solid var(--glass-border);text-align:left;}
-.ctbl td{padding:5px 7px;border-bottom:1px solid rgba(0,100,150,.06);color:var(--text-secondary);}
+.ctbl th{
+  color:var(--text-muted);font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;font-size:8px;padding:4px 7px;
+  border-bottom:1px solid var(--glass-border);text-align:left;
+}
+.ctbl td{
+  padding:5px 7px;
+  border-bottom:1px solid rgba(0,100,150,.06);
+  color:var(--text-secondary);
+}
 .ctbl tr:hover td{background:rgba(0,50,100,.2);}
 .t-rank{color:var(--text-muted);font-family:var(--mono);font-size:8px;}
 .leaflet-control-zoom{display:none;}
-body{display:flex;flex-direction:column;height:100vh;}
+
+/* ── MOBILE TAB BAR ──────────────────────────────────── */
+/* Hidden on desktop, shown on mobile */
+#tab-bar{display:none;}
+
+/* ── MOBILE GESTURE HINT ─────────────────────────────── */
+.map-gesture-hint{
+  position:absolute;inset:0;z-index:998;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(2,8,22,.55);pointer-events:none;
+  opacity:0;transition:opacity .4s;
+}
+.map-gesture-hint.show{opacity:1;}
+.map-gesture-hint span{
+  background:rgba(4,12,28,.9);border:1px solid var(--glass-border);
+  color:var(--text-secondary);padding:8px 16px;border-radius:20px;
+  font-size:11px;letter-spacing:.06em;
+}
+
+/* ==========================================================
+   MOBILE LAYOUT  (≤ 767px)
+   Stack: header → kpi → filter → tab-bar → content panes
+   ========================================================== */
+@media (max-width:767px){
+
+  /* Allow body to scroll on mobile */
+  body{overflow:auto;height:auto;min-height:100vh;}
+
+  /* Header compact */
+  #header{padding:0 12px;height:44px;}
+  .hdr-logo span{display:none;} /* hide text, keep icon */
+  .hdr-title{font-size:10px;letter-spacing:.06em;}
+
+  /* KPI — 2×2 grid */
+  #kpi-bar{
+    grid-template-columns:repeat(2,1fr);
+    gap:5px;padding:6px 10px;
+  }
+  .kpi{padding:8px 10px;border-radius:6px;}
+  .kpi-v{font-size:15px;}
+  .kpi-l{font-size:7px;}
+
+  /* Filter bar — horizontal scroll, no wrap */
+  #fbar{padding:5px 10px;gap:6px;}
+  .flbl{display:none;}  /* hide "Filter Industry" label on small screens */
+
+  /* Remove 3-column grid — use tab-based single column */
+  #main{
+    display:block;
+    flex:none;
+    /* no fixed height — each section sizes itself */
+  }
+
+  /* All panels become full-width blocks, hidden by default */
+  .panel{
+    display:none;
+    width:100%;
+    overflow:visible;
+    border-right:none;border-left:none;
+    border-top:1px solid var(--glass-border);
+  }
+  .panel.active{display:flex;}
+
+  /* MAP panel special — always a fixed viewport height */
+  #map-panel{
+    display:block;  /* always visible */
+    width:100%;
+    height:55vw;    /* ~55% of viewport width = nice tall rectangle */
+    min-height:260px;
+    max-height:420px;
+    border-top:1px solid var(--glass-border);
+  }
+  #map{width:100%;height:100%;}
+
+  /* Map controls — smaller on mobile */
+  .map-ctrls{top:8px;right:8px;gap:3px;}
+  .bm-btn{padding:3px 7px;font-size:8px;}
+  .layer-btns{bottom:10px;left:8px;}
+  .lay-btn{padding:3px 8px;font-size:8px;}
+
+  /* Tab bar */
+  #tab-bar{
+    display:flex;
+    flex-shrink:0;
+    background:rgba(4,10,22,.97);
+    border-top:1px solid var(--glass-border);
+    border-bottom:1px solid var(--glass-border);
+    position:sticky;top:0;z-index:150;
+  }
+  .tab-btn{
+    flex:1;padding:9px 4px;
+    background:transparent;border:none;
+    color:var(--text-muted);font-size:9px;
+    font-family:var(--font);font-weight:600;
+    letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;transition:all .18s;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    border-bottom:2px solid transparent;
+  }
+  .tab-btn .tab-icon{font-size:16px;}
+  .tab-btn.active{
+    color:var(--accent-cyan);
+    border-bottom-color:var(--accent-cyan);
+    background:rgba(0,212,255,.05);
+  }
+
+  /* Sections inside panels — no fixed heights on mobile */
+  .sec{padding:12px 14px;}
+  .chart-wrap{height:auto !important;}
+  #donut{height:180px !important;}
+  #bar{height:200px !important;}
+
+  /* Right panel on mobile — full width */
+  #right-panel{border-left:none;}
+  .ctbl td,.ctbl th{padding:6px 8px;}
+}
+
+/* ── TABLET  768-1023px ───────────────────────────────── */
+@media (min-width:768px) and (max-width:1023px){
+  #main{grid-template-columns:200px 1fr 220px;}
+  .hdr-title{font-size:11px;}
+}
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 
+<!-- HEADER -->
 <div id="header">
   <div class="hdr-logo">
     <div class="logo-box">&#127760;</div>
-    GeoIntel MY
+    <span>GeoIntel MY</span>
   </div>
   <div class="hdr-title"><em>Geospatial</em> Industry Dashboard &mdash; Malaysia</div>
   <div class="hdr-right">
@@ -185,15 +475,29 @@ body{display:flex;flex-direction:column;height:100vh;}
   </div>
 </div>
 
+<!-- KPI BAR -->
 <div id="kpi-bar">
-  <div class="kpi"><div class="kpi-ico">&#127970;</div><div><div class="kpi-v" id="kpi-total">—</div><div class="kpi-l">Total Companies</div></div></div>
-  <div class="kpi"><div class="kpi-ico">&#128202;</div><div><div class="kpi-v" id="kpi-ind-count">—</div><div class="kpi-l">Industries</div></div></div>
-  <div class="kpi"><div class="kpi-ico">&#128205;</div><div><div class="kpi-v" id="kpi-state">—</div><div class="kpi-l">Top State</div></div></div>
-  <div class="kpi"><div class="kpi-ico">&#128640;</div><div><div class="kpi-v" id="kpi-ind">—</div><div class="kpi-l">Top Industry</div></div></div>
+  <div class="kpi">
+    <div class="kpi-ico">&#127970;</div>
+    <div><div class="kpi-v" id="kpi-total">—</div><div class="kpi-l">Total Companies</div></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-ico">&#128202;</div>
+    <div><div class="kpi-v" id="kpi-ind-count">—</div><div class="kpi-l">Industries</div></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-ico">&#128205;</div>
+    <div><div class="kpi-v" id="kpi-state" style="font-size:12px">—</div><div class="kpi-l">Top State</div></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-ico">&#128640;</div>
+    <div><div class="kpi-v" id="kpi-ind" style="font-size:12px">—</div><div class="kpi-l">Top Industry</div></div>
+  </div>
 </div>
 
+<!-- FILTER BAR -->
 <div id="fbar">
-  <span class="flbl">Filter Industry</span>
+  <span class="flbl">Filter</span>
   <div class="pills" id="pills">
     <div class="pill active" onclick="setFilter('All',this)">All</div>
     <div class="pill" onclick="setFilter('Drone',this)">Drone</div>
@@ -205,9 +509,24 @@ body{display:flex;flex-direction:column;height:100vh;}
   </div>
 </div>
 
+<!-- MOBILE TAB BAR (hidden on desktop) -->
+<div id="tab-bar">
+  <button class="tab-btn" onclick="switchTab('charts')" id="tab-charts">
+    <span class="tab-icon">📊</span>Charts
+  </button>
+  <button class="tab-btn active" onclick="switchTab('map')" id="tab-map">
+    <span class="tab-icon">🗺</span>Map
+  </button>
+  <button class="tab-btn" onclick="switchTab('explorer')" id="tab-explorer">
+    <span class="tab-icon">🏢</span>Explorer
+  </button>
+</div>
+
+<!-- MAIN CONTENT -->
 <div id="main">
-  <!-- LEFT -->
-  <div class="panel">
+
+  <!-- LEFT PANEL — Charts + Search -->
+  <div class="panel" id="left-panel">
     <div class="sec">
       <div class="sec-title">Industry Distribution</div>
       <div class="chart-wrap" style="height:155px"><canvas id="donut"></canvas></div>
@@ -217,31 +536,44 @@ body{display:flex;flex-direction:column;height:100vh;}
       <div class="chart-wrap" style="height:175px"><canvas id="bar"></canvas></div>
     </div>
     <div class="sec grow">
-      <div class="sec-title">AI Career Assistant</div>
+      <div class="sec-title">Search Companies</div>
       <div class="ai-row">
-        <input class="ai-inp" id="ai-inp" placeholder="Which companies use drone mapping?" onkeydown="if(event.key==='Enter')runAI()"/>
+        <input class="ai-inp" id="ai-inp"
+          placeholder="e.g. drone mapping, GIS KL…"
+          onkeydown="if(event.key==='Enter')runAI()"/>
         <button class="ai-go" onclick="runAI()">&#8594;</button>
       </div>
       <div id="ai-qs-wrap">
         <div class="ai-qs">
           <div class="qs-lbl">QUICK QUERIES</div>
-          <div class="ai-r" onclick="quickSearch('drone mapping')"><span style="font-size:9px;color:var(--text-secondary)">Drone mapping companies &rarr;</span></div>
-          <div class="ai-r" onclick="quickSearch('GIS Kuala Lumpur')"><span style="font-size:9px;color:var(--text-secondary)">GIS firms in KL &rarr;</span></div>
-          <div class="ai-r" onclick="quickSearch('remote sensing')"><span style="font-size:9px;color:var(--text-secondary)">Remote sensing companies &rarr;</span></div>
-          <div class="ai-r" onclick="quickSearch('land survey Johor')"><span style="font-size:9px;color:var(--text-secondary)">Land survey in Johor &rarr;</span></div>
+          <div class="ai-r" onclick="quickSearch('drone mapping')">
+            <span style="font-size:9px;color:var(--text-secondary)">Drone mapping companies &rarr;</span>
+          </div>
+          <div class="ai-r" onclick="quickSearch('GIS Kuala Lumpur')">
+            <span style="font-size:9px;color:var(--text-secondary)">GIS firms in KL &rarr;</span>
+          </div>
+          <div class="ai-r" onclick="quickSearch('remote sensing')">
+            <span style="font-size:9px;color:var(--text-secondary)">Remote sensing companies &rarr;</span>
+          </div>
+          <div class="ai-r" onclick="quickSearch('land survey Johor')">
+            <span style="font-size:9px;color:var(--text-secondary)">Land survey in Johor &rarr;</span>
+          </div>
         </div>
       </div>
       <div id="ai-res"></div>
     </div>
   </div>
 
-  <!-- MAP -->
+  <!-- MAP PANEL -->
   <div id="map-panel">
     <div id="map"></div>
-    <!-- Loading overlay — shown while CSV is fetching -->
     <div id="map-loader">
       <div class="loader-ring"></div>
       <span>LOADING DATA…</span>
+    </div>
+    <!-- Mobile gesture hint -->
+    <div class="map-gesture-hint" id="gesture-hint">
+      <span>&#8678; Use two fingers to pan &amp; zoom &#8680;</span>
     </div>
     <div class="map-ctrls">
       <button class="bm-btn active" onclick="setBM('dark',this)">Dark</button>
@@ -257,8 +589,8 @@ body{display:flex;flex-direction:column;height:100vh;}
     </div>
   </div>
 
-  <!-- RIGHT -->
-  <div class="panel">
+  <!-- RIGHT PANEL — Company Explorer -->
+  <div class="panel" id="right-panel">
     <div class="sec">
       <div class="sec-title">Company Explorer</div>
       <select class="csel" id="csel" onchange="showCompany(this.value)">
@@ -267,19 +599,20 @@ body{display:flex;flex-direction:column;height:100vh;}
       <div id="c-profile" style="display:none">
         <div class="c-profile">
           <div class="p-logo" id="p-logo">AG</div>
-          <div class="p-name" id="p-name">Aerodyne Group</div>
-          <span class="chip" id="p-badge" style="margin-top:4px;display:inline-block">Drone</span>
+          <div class="p-name" id="p-name"></div>
+          <span class="chip" id="p-badge" style="margin-top:4px;display:inline-block"></span>
           <div class="p-detail">
             <div class="d-row"><span class="d-lbl">Location</span><span id="p-loc"></span></div>
             <div class="d-row"><span class="d-lbl">Phone</span><span id="p-phone"></span></div>
             <div class="d-row"><span class="d-lbl">Email</span><span id="p-email"></span></div>
-            <div class="d-row"><span class="d-lbl">Web</span><span id="p-web" style="color:var(--accent-cyan)"></span></div>
+            <div class="d-row"><span class="d-lbl">Web</span>
+              <span id="p-web" style="color:var(--accent-cyan)"></span></div>
           </div>
           <div class="p-desc" id="p-desc"></div>
         </div>
       </div>
     </div>
-    <div class="sec grow" style="overflow:auto">
+    <div class="sec grow">
       <div class="sec-title">Top Companies</div>
       <table class="ctbl">
         <thead><tr><th>#</th><th>Company</th><th>Industry</th><th>State</th></tr></thead>
@@ -287,20 +620,21 @@ body{display:flex;flex-direction:column;height:100vh;}
       </table>
     </div>
   </div>
-</div>
+
+</div><!-- /#main -->
 
 <script>
-// =============================================================
-// CONFIG — replace with your published Google Sheet CSV URL
-// Sheet must be: File → Share → Publish to web → CSV format
-// =============================================================
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfyM6laDl4zieKhx6YjtG9GlGXFyMPuU-EMbvBuAgJiiPowTTOD0WhY0TmabGm-ibbTQuD1hL__v9X/pub?gid=0&single=true&output=csv";
-// Auto-refresh interval in milliseconds (15 minutes)
-const REFRESH_INTERVAL = 15 * 60 * 1000;
+// ============================================================
+// CONFIG
+// ============================================================
+const CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfyM6laDl4zieKhx6YjtG9GlGXFyMPuU-EMbvBuAgJiiPowTTOD0WhY0TmabGm-ibbTQuD1hL__v9X/pub?gid=0&single=true&output=csv";
 
-// =============================================================
+const REFRESH_INTERVAL = 15 * 60 * 1000; // 15 minutes
+
+// ============================================================
 // STATE
-// =============================================================
+// ============================================================
 let DATA = [];
 let curFilter = 'All';
 let map, mkLayer, htLayer, showMk = true, showHt = false;
@@ -314,7 +648,7 @@ const IND_COLOR = {
   'Hydrography':        '#4da6ff',
   'Remote Sensing':     '#ff9944',
   'Engineering Survey': '#cc66ff',
-  'Land Survey':        '#4477ff'
+  'Land Survey':        '#4477ff',
 };
 const IND_CHIP = {
   'Drone':              'c-drone',
@@ -322,71 +656,90 @@ const IND_CHIP = {
   'Hydrography':        'c-hydro',
   'Remote Sensing':     'c-rs',
   'Engineering Survey': 'c-eng',
-  'Land Survey':        'c-land'
+  'Land Survey':        'c-land',
 };
 
-// =============================================================
-// SAFE HELPERS
-// =============================================================
-// Escape HTML to prevent XSS and broken popup markup
+// ============================================================
+// HELPERS
+// ============================================================
 function esc(s) {
   return String(s == null ? '' : s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function chipClass(ind) { return IND_CHIP[ind] || 'c-other'; }
+function indColor(ind)   { return IND_COLOR[ind] || '#aaaaaa'; }
+
+// ============================================================
+// MOBILE TAB SWITCHING
+// ============================================================
+const isMobile = () => window.innerWidth < 768;
+
+function switchTab(tab) {
+  if (!isMobile()) return;
+
+  // Update tab buttons
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+
+  // Show/hide panels
+  document.getElementById('left-panel').classList.toggle('active',   tab === 'charts');
+  document.getElementById('right-panel').classList.toggle('active',  tab === 'explorer');
+  // Map panel is always in the DOM but positioned by CSS; just invalidate its size
+  if (tab === 'map') {
+    setTimeout(() => map && map.invalidateSize(), 50);
+  }
 }
 
-// Safe chip class — falls back to c-other if industry not in map
-function chipClass(industry) {
-  return IND_CHIP[industry] || 'c-other';
+// On resize: if switching desktop→mobile or vice versa, reset panel visibility
+function onResize() {
+  if (isMobile()) {
+    // Ensure the active tab's panel is shown
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab) {
+      const id = activeTab.id.replace('tab-', '');
+      switchTab(id);
+    }
+  } else {
+    // Desktop: show all panels
+    document.getElementById('left-panel').classList.remove('active');
+    document.getElementById('right-panel').classList.remove('active');
+  }
+  if (map) map.invalidateSize();
 }
+window.addEventListener('resize', onResize);
 
-// Safe industry color — falls back to grey
-function indColor(industry) {
-  return IND_COLOR[industry] || '#aaaaaa';
-}
-
-// =============================================================
-// CSV PARSER — handles quoted fields with commas, \r\n, escaped quotes
-// =============================================================
+// ============================================================
+// CSV PARSER
+// ============================================================
 function parseCSV(text) {
-  // Normalise line endings
-  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  text = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
 
+  // Split into logical lines respecting quoted newlines
   const lines = [];
   let cur = '', inQ = false;
-  // Split into logical lines (quoted newlines stay together)
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (ch === '"') {
-      if (inQ && text[i+1] === '"') { cur += '"'; i++; } // escaped quote
+      if (inQ && text[i+1] === '"') { cur += '"'; i++; }
       else inQ = !inQ;
       cur += ch;
     } else if (ch === '\n' && !inQ) {
-      lines.push(cur);
-      cur = '';
-    } else {
-      cur += ch;
-    }
+      lines.push(cur); cur = '';
+    } else { cur += ch; }
   }
   if (cur.trim()) lines.push(cur);
 
-  // Parse a single CSV line into an array of field strings
   function parseLine(line) {
-    const fields = [];
-    let field = '', inQuote = false;
+    const fields = []; let field = '', inQuote = false;
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
       if (ch === '"') {
-        if (inQuote && line[i+1] === '"') { field += '"'; i++; } // escaped
+        if (inQuote && line[i+1] === '"') { field += '"'; i++; }
         else inQuote = !inQuote;
       } else if (ch === ',' && !inQuote) {
-        fields.push(field.trim());
-        field = '';
-      } else {
-        field += ch;
-      }
+        fields.push(field.trim()); field = '';
+      } else { field += ch; }
     }
     fields.push(field.trim());
     return fields;
@@ -394,11 +747,9 @@ function parseCSV(text) {
 
   if (lines.length < 2) return [];
 
-  // Parse header row — normalise to lowercase for flexible matching
-  const rawHeaders = parseLine(lines[0]);
-  const headers = rawHeaders.map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
+  const rawH = parseLine(lines[0]);
+  const headers = rawH.map(h => h.toLowerCase().replace(/[^a-z0-9]/g,''));
 
-  // Find a column index by trying multiple alias names
   function col(aliases) {
     for (const a of aliases) {
       const i = headers.indexOf(a);
@@ -407,7 +758,6 @@ function parseCSV(text) {
     return -1;
   }
 
-  // Column index map — handles variations in header naming
   const COL = {
     name:     col(['company','name','companyname']),
     industry: col(['industry','sector','category','type']),
@@ -427,68 +777,58 @@ function parseCSV(text) {
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
-
     const f = parseLine(line);
 
-    // Helper: get field value by column index, strip surrounding quotes
-    const get = (idx, def = '') => {
+    const get = (idx, def='') => {
       if (idx < 0 || idx >= f.length) return def;
       let v = f[idx];
-      // Strip surrounding double-quotes added by CSV serialiser
       if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1,-1);
-      return v.replace(/""/g, '"').trim() || def;
+      return v.replace(/""/g,'"').trim() || def;
     };
 
     const lat = parseFloat(get(COL.lat));
     const lng = parseFloat(get(COL.lng));
-
-    // Skip rows where coordinates are invalid — they can't be mapped
-    if (isNaN(lat) || isNaN(lng) || lat === 0 && lng === 0) continue;
+    if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) continue;
 
     const name = get(COL.name);
-    if (!name) continue; // skip empty rows
+    if (!name) continue;
 
     rows.push({
       name,
-      industry: get(COL.industry, 'Other'),
-      state:    get(COL.state, ''),
-      city:     get(COL.city, ''),
-      country:  get(COL.country, 'Malaysia'),
-      lat,
-      lng,
-      web:      get(COL.web, ''),
-      logo:     get(COL.logo, ''),
-      phone:    get(COL.phone, ''),
-      email:    get(COL.email, ''),
-      desc:     get(COL.desc, ''),
+      industry: get(COL.industry,'Other'),
+      state:    get(COL.state,''),
+      city:     get(COL.city,''),
+      country:  get(COL.country,'Malaysia'),
+      lat, lng,
+      web:      get(COL.web,''),
+      logo:     get(COL.logo,''),
+      phone:    get(COL.phone,''),
+      email:    get(COL.email,''),
+      desc:     get(COL.desc,''),
     });
   }
   return rows;
 }
 
-// =============================================================
-// CSV FETCH — with CORS fallback for GitHub Pages
-// =============================================================
+// ============================================================
+// CSV FETCH — multi-proxy fallback
+// ============================================================
 async function loadSheetData() {
   showLoader(true);
   try {
     let text = null;
-
-    // Multiple CORS proxy fallbacks — GitHub Pages cannot fetch Google Sheets directly.
-    // The browser tries each in order and uses the first that returns valid CSV text.
     const proxies = [
       u => u,
       u => 'https://corsproxy.io/?' + encodeURIComponent(u),
       u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
       u => 'https://thingproxy.freeboard.io/fetch/' + u,
     ];
-
     for (const makeUrl of proxies) {
       const fetchUrl = makeUrl(CSV_URL);
       try {
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 8000);
-        const resp = await fetch(fetchUrl, { cache:'no-store', signal: ctrl.signal });
+        const resp = await fetch(fetchUrl, { cache:'no-store', signal:ctrl.signal });
         clearTimeout(timer);
         if (!resp.ok) continue;
         const t = await resp.text();
@@ -502,30 +842,32 @@ async function loadSheetData() {
       }
     }
 
-    if (!text) throw new Error('All proxies failed. Ensure the sheet is published: File > Share > Publish to web > CSV.');
+    if (!text) throw new Error(
+      'All proxies failed. Ensure the sheet is published: File → Share → Publish to web → CSV.'
+    );
 
-    // Log first raw line so user can debug column mapping in browser console
-    const firstLine = text.split('\n')[0];
-    console.log('CSV headers detected:', firstLine);
-
+    console.log('CSV headers:', text.split('\n')[0]);
     const parsed = parseCSV(text);
-    if (parsed.length === 0) throw new Error('0 valid rows parsed. Check your sheet has latitude and longitude columns with numeric values. See console for detected headers.');
-    console.log('Sample parsed row:', JSON.stringify(parsed[0]));
+    if (parsed.length === 0) throw new Error(
+      '0 valid rows parsed. Check latitude/longitude columns have numeric values.'
+    );
 
     DATA = parsed;
     refreshDashboard();
-    console.log('Dashboard loaded:', DATA.length, 'companies');
+    console.log('Loaded', DATA.length, 'companies');
 
   } catch (err) {
-    console.error('loadSheetData error:', err);
-    document.getElementById('kpi-total').textContent = 'ERR';
-    document.getElementById('kpi-ind-count').textContent = '---';
-    document.getElementById('kpi-state').textContent = '---';
-    document.getElementById('kpi-ind').textContent = '---';
+    console.error('loadSheetData:', err);
+    ['kpi-total','kpi-ind-count'].forEach(id =>
+      document.getElementById(id).textContent = 'ERR'
+    );
+    ['kpi-state','kpi-ind'].forEach(id =>
+      document.getElementById(id).textContent = '—'
+    );
     document.getElementById('tbl-body').innerHTML =
-      '<tr><td colspan="4" style="color:#ff6060;font-size:9px;padding:10px 7px;line-height:1.8">' +
-      'Error: ' + err.message.replace(/</g,'&lt;') + '<br>' +
-      '<span style="color:var(--text-muted)">Open browser console (F12) for details.</span></td></tr>';
+      '<tr><td colspan="4" style="color:#ff6060;font-size:9px;padding:10px 7px;line-height:1.9">' +
+      '&#9888; ' + err.message.replace(/</g,'&lt;') +
+      '<br><span style="color:var(--text-muted)">Open F12 console for details.</span></td></tr>';
   } finally {
     showLoader(false);
   }
@@ -535,21 +877,22 @@ function showLoader(on) {
   document.getElementById('map-loader').classList.toggle('hidden', !on);
 }
 
-// =============================================================
+// ============================================================
 // INIT
-// =============================================================
+// ============================================================
 window.addEventListener('load', () => {
   initStarfield();
   initMap();
   initCharts();
   loadSheetData();
-  // Auto-refresh every 15 minutes
   setInterval(loadSheetData, REFRESH_INTERVAL);
+  // Set initial mobile tab state
+  if (isMobile()) switchTab('map');
 });
 
-// =============================================================
+// ============================================================
 // STARFIELD
-// =============================================================
+// ============================================================
 function initStarfield() {
   const cv = document.getElementById('bg-canvas');
   const cx = cv.getContext('2d');
@@ -558,8 +901,11 @@ function initStarfield() {
     W = cv.width = window.innerWidth; H = cv.height = window.innerHeight;
     stars = [];
     for (let i = 0; i < 100; i++)
-      stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.1+0.2,
-                   a: Math.random(), s: (Math.random()*0.004+0.001)*(Math.random()<.5?1:-1) });
+      stars.push({
+        x: Math.random()*W, y: Math.random()*H,
+        r: Math.random()*1.1+0.2, a: Math.random(),
+        s: (Math.random()*0.004+0.001) * (Math.random()<.5?1:-1),
+      });
   }
   function draw() {
     cx.clearRect(0,0,W,H);
@@ -578,45 +924,56 @@ function initStarfield() {
   window.addEventListener('resize', init);
 }
 
-// =============================================================
-// MAP — all 6 tile layers properly defined
-// =============================================================
+// ============================================================
+// MAP
+// ============================================================
 function initMap() {
+  // FIX: removed the broken map.gestureHandling.enable() call —
+  // that method does not exist in Leaflet without a separate plugin.
+  // Mobile scroll is handled natively by Leaflet's touch events.
+  map = L.map('map', {
+    center: [4.2, 109.5],
+    zoom: 5,
+    zoomControl: false,
+    preferCanvas: true,
+    // Tap delay disabled for snappier mobile taps
+    tapTolerance: 15,
+  });
 
-map = L.map('map', { 
-center:[4.2,109.5], 
-zoom:5, 
-zoomControl:false, 
-preferCanvas:true 
-});
+  // On mobile: disable scroll-wheel zoom so page doesn't get stuck inside map
+  if (isMobile()) {
+    map.scrollWheelZoom.disable();
+  }
 
-// mobile behaviour only
-if (window.innerWidth < 768) {
+  // Show gesture hint briefly on mobile touch
+  const hint = document.getElementById('gesture-hint');
+  let hintTimer;
+  document.getElementById('map').addEventListener('touchstart', () => {
+    clearTimeout(hintTimer);
+    hint.classList.remove('show');
+  }, { passive: true });
+  // Show hint if user tries to scroll the page over the map with 1 finger
+  document.getElementById('map').addEventListener('touchmove', e => {
+    if (e.touches.length === 1) {
+      hint.classList.add('show');
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => hint.classList.remove('show'), 1500);
+    }
+  }, { passive: true });
 
-map.scrollWheelZoom.disable();
-map.gestureHandling.enable();
-
-}
-  
-  // 1. Dark (Carto Dark Matter) — default
+  // Tile layers
   bmLayers.dark = L.tileLayer(
     'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
     { subdomains:'abcd', maxZoom:19 }
   );
-
-  // 2. OSM Standard
   bmLayers.osm = L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     { subdomains:'abc', maxZoom:19 }
   );
-
-  // 3. Satellite (ESRI World Imagery)
   bmLayers.satellite = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     { maxZoom:19 }
   );
-
-  // 4. Hybrid = Satellite base + ESRI labels overlay
   bmLayers.hybrid = L.layerGroup([
     L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -625,10 +982,8 @@ map.gestureHandling.enable();
     L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
       { maxZoom:19, opacity:0.9 }
-    )
+    ),
   ]);
-  
-  // 5. Train = Carto Light base + OpenRailwayMap overlay
   bmLayers.train = L.layerGroup([
     L.tileLayer(
       'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
@@ -637,25 +992,18 @@ map.gestureHandling.enable();
     L.tileLayer(
       'https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
       { subdomains:'abc', maxZoom:19, opacity:0.85 }
-    )
+    ),
   ]);
-
-  // 6. Terrain (OpenTopoMap)
   bmLayers.terrain = L.tileLayer(
     'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
     { subdomains:'abc', maxZoom:17 }
   );
 
   bmLayers.dark.addTo(map);
-
-  // Separate layer groups for markers and heatmap
   mkLayer = L.layerGroup().addTo(map);
-  htLayer = L.layerGroup(); // starts hidden — added to map when toggled on
+  htLayer = L.layerGroup();
 }
 
-// =============================================================
-// BASEMAP SWITCHER — works for both TileLayer and LayerGroup
-// =============================================================
 function setBM(name, btn) {
   document.querySelectorAll('.bm-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -664,45 +1012,50 @@ function setBM(name, btn) {
   bmLayers[name].addTo(map);
 }
 
-// =============================================================
-// MARKERS — NaN guard, proper popup HTML, click syncs right panel
-// =============================================================
+// ============================================================
+// MARKERS
+// ============================================================
 function renderMarkers() {
   mkLayer.clearLayers();
   filtered().forEach(c => {
-    const lat = parseFloat(c.lat);
-    const lng = parseFloat(c.lng);
-    if (isNaN(lat) || isNaN(lng)) return; // skip invalid coords
+    const lat = parseFloat(c.lat), lng = parseFloat(c.lng);
+    if (isNaN(lat) || isNaN(lng)) return;
 
     const col = indColor(c.industry);
     const icon = L.divIcon({
       className: '',
-      html: '<div style="width:11px;height:11px;border-radius:50%;background:' + col +
-            ';border:2px solid rgba(255,255,255,0.35);' +
-            'box-shadow:0 0 7px ' + col + '99,0 0 14px ' + col + '44;cursor:pointer"></div>',
-      iconSize: [11,11], iconAnchor: [5,5]
+      html: '<div style="width:11px;height:11px;border-radius:50%;background:'+col+
+            ';border:2px solid rgba(255,255,255,0.35);'+
+            'box-shadow:0 0 7px '+col+'99,0 0 14px '+col+'44;cursor:pointer"></div>',
+      iconSize:[11,11], iconAnchor:[5,5],
     });
 
-    const webUrl = c.web ? (c.web.match(/^https?:\/\//) ? c.web : 'https://' + c.web) : '';
+    const webUrl = c.web ? (c.web.match(/^https?:\/\//) ? c.web : 'https://'+c.web) : '';
     const popHTML =
-      '<div class="pop">' +
-      '<div class="pop-name">' + esc(c.name) + '</div>' +
-      '<div class="pop-row"><span>Industry</span><span>' + esc(c.industry) + '</span></div>' +
-      '<div class="pop-row"><span>Location</span><span>' + esc(c.city) + (c.city && c.state ? ', ' : '') + esc(c.state) + '</span></div>' +
-      (c.phone ? '<div class="pop-row"><span>Phone</span><span>' + esc(c.phone) + '</span></div>' : '') +
-      (c.desc ? '<div class="pop-row"><span>About</span><span style="color:var(--text-muted)">' + esc(c.desc.substring(0,90)) + (c.desc.length > 90 ? '…' : '') + '</span></div>' : '') +
-      (webUrl ? '<a class="pop-web" href="' + esc(webUrl) + '" target="_blank" rel="noopener">' + esc(c.web) + ' &#8599;</a>' : '') +
+      '<div class="pop">'+
+      '<div class="pop-name">'+esc(c.name)+'</div>'+
+      '<div class="pop-row"><span>Industry</span><span>'+esc(c.industry)+'</span></div>'+
+      '<div class="pop-row"><span>Location</span><span>'+
+        esc(c.city)+(c.city&&c.state?', ':'')+esc(c.state)+'</span></div>'+
+      (c.phone?'<div class="pop-row"><span>Phone</span><span>'+esc(c.phone)+'</span></div>':'')+
+      (c.desc?'<div class="pop-row"><span>About</span><span style="color:var(--text-muted)">'+
+        esc(c.desc.substring(0,90))+(c.desc.length>90?'…':'')+'</span></div>':'')+
+      (webUrl?'<a class="pop-web" href="'+esc(webUrl)+'" target="_blank" rel="noopener">'+
+        esc(c.web)+' &#8599;</a>':'')+
       '</div>';
 
-    const mk = L.marker([lat, lng], { icon, riseOnHover: true });
+    const mk = L.marker([lat,lng], { icon, riseOnHover:true });
     mk.bindPopup(popHTML, { className:'custom-popup', maxWidth:260 });
 
-    // Sync right-panel Company Explorer when popup opens
     mk.on('popupopen', () => {
       const idx = DATA.findIndex(d => d.name === c.name);
       if (idx >= 0) {
         document.getElementById('csel').value = idx;
-        showCompany(idx, false); // false = don't fly again, already on marker
+        showCompany(idx, false);
+        // On mobile, auto-switch to explorer tab when a popup opens
+        if (isMobile()) {
+          setTimeout(() => switchTab('explorer'), 400);
+        }
       }
     });
 
@@ -714,10 +1067,10 @@ function renderHeat() {
   htLayer.clearLayers();
   DATA.forEach(c => {
     const lat = parseFloat(c.lat), lng = parseFloat(c.lng);
-    if (isNaN(lat) || isNaN(lng)) return;
+    if (isNaN(lat)||isNaN(lng)) return;
     const col = indColor(c.industry);
-    htLayer.addLayer(L.circle([lat, lng], {
-      radius: 45000, fillColor: col, fillOpacity: 0.07, color: col, weight: 0
+    htLayer.addLayer(L.circle([lat,lng], {
+      radius:45000, fillColor:col, fillOpacity:0.07, color:col, weight:0,
     }));
   });
 }
@@ -734,38 +1087,60 @@ function toggleLayer(t) {
   }
 }
 
-// =============================================================
-// CHARTS — initialised empty; updated after data loads
-// =============================================================
+// ============================================================
+// CHARTS
+// ============================================================
 function initCharts() {
   const dCtx = document.getElementById('donut').getContext('2d');
   const bCtx = document.getElementById('bar').getContext('2d');
 
   donutC = new Chart(dCtx, {
-    type: 'doughnut',
-    data: { labels:[], datasets:[{ data:[], backgroundColor:[], borderColor:[], borderWidth:1.5, hoverOffset:4 }] },
-    options: {
+    type:'doughnut',
+    data:{ labels:[], datasets:[{
+      data:[], backgroundColor:[], borderColor:[], borderWidth:1.5, hoverOffset:4
+    }]},
+    options:{
       responsive:true, maintainAspectRatio:false,
-      plugins: {
-        legend: { position:'right', labels:{ color:'rgba(180,210,255,.6)', font:{size:8,family:'Space Grotesk'}, boxWidth:9, padding:6 } },
-        tooltip: { callbacks:{ labelColor: c => ({ backgroundColor: Object.values(IND_COLOR)[c.dataIndex] || '#aaa', borderColor:'transparent' }) } }
+      plugins:{
+        legend:{ position:'right', labels:{
+          color:'rgba(180,210,255,.6)',
+          font:{size:8,family:'Space Grotesk'},
+          boxWidth:9, padding:6,
+        }},
+        tooltip:{ callbacks:{
+          labelColor: c => ({
+            backgroundColor: Object.values(IND_COLOR)[c.dataIndex]||'#aaa',
+            borderColor:'transparent',
+          }),
+        }},
       },
-      cutout:'64%', animation:{ duration:700 }
-    }
+      cutout:'64%', animation:{duration:700},
+    },
   });
 
   barC = new Chart(bCtx, {
-    type: 'bar',
-    data: { labels:[], datasets:[{ data:[], backgroundColor:'rgba(0,212,255,.16)', borderColor:[], borderWidth:1.5, borderRadius:3, borderSkipped:false }] },
-    options: {
+    type:'bar',
+    data:{ labels:[], datasets:[{
+      data:[], backgroundColor:'rgba(0,212,255,.16)',
+      borderColor:[], borderWidth:1.5, borderRadius:3, borderSkipped:false,
+    }]},
+    options:{
       indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      plugins: { legend:{ display:false } },
-      scales: {
-        x: { grid:{ color:'rgba(0,100,200,.06)', drawBorder:false }, ticks:{ color:'rgba(180,210,255,.4)', font:{size:8,family:"'JetBrains Mono',monospace"}, maxTicksLimit:5 }, border:{ display:false } },
-        y: { grid:{ display:false }, ticks:{ color:'rgba(180,210,255,.6)', font:{size:8,family:'Space Grotesk'} }, border:{ display:false } }
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{
+          grid:{color:'rgba(0,100,200,.06)',drawBorder:false},
+          ticks:{color:'rgba(180,210,255,.4)',font:{size:8,family:"'JetBrains Mono',monospace"},maxTicksLimit:5},
+          border:{display:false},
+        },
+        y:{
+          grid:{display:false},
+          ticks:{color:'rgba(180,210,255,.6)',font:{size:8,family:'Space Grotesk'}},
+          border:{display:false},
+        },
       },
-      animation:{ duration:500 }
-    }
+      animation:{duration:500},
+    },
   });
 
   chartsReady = true;
@@ -773,60 +1148,57 @@ function initCharts() {
 
 function getIndData() {
   const c = {};
-  (curFilter === 'All' ? DATA : DATA.filter(x => x.industry === curFilter))
-    .forEach(x => { c[x.industry] = (c[x.industry] || 0) + 1; });
+  (curFilter==='All'?DATA:DATA.filter(x=>x.industry===curFilter))
+    .forEach(x => { c[x.industry] = (c[x.industry]||0)+1; });
   return c;
 }
-
 function getStateData() {
   const c = {};
-  filtered().forEach(x => { c[x.state] = (c[x.state] || 0) + 1; });
-  return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]).slice(0,7));
+  filtered().forEach(x => { c[x.state] = (c[x.state]||0)+1; });
+  return Object.fromEntries(Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,7));
 }
-
 function filtered() {
-  return curFilter === 'All' ? DATA : DATA.filter(c => c.industry === curFilter);
+  return curFilter==='All' ? DATA : DATA.filter(c => c.industry===curFilter);
 }
 
 function updateCharts() {
   if (!chartsReady) return;
   const id = getIndData(), sd = getStateData();
-  const indKeys = Object.keys(id);
-  donutC.data.labels = indKeys;
+  const ik = Object.keys(id);
+  donutC.data.labels = ik;
   donutC.data.datasets[0].data = Object.values(id);
-  donutC.data.datasets[0].backgroundColor = indKeys.map(k => indColor(k) + '99');
-  donutC.data.datasets[0].borderColor = indKeys.map(k => indColor(k));
+  donutC.data.datasets[0].backgroundColor = ik.map(k => indColor(k)+'99');
+  donutC.data.datasets[0].borderColor      = ik.map(k => indColor(k));
   donutC.update();
 
-  const stKeys = Object.keys(sd);
-  barC.data.labels = stKeys;
+  const sk = Object.keys(sd);
+  barC.data.labels = sk;
   barC.data.datasets[0].data = Object.values(sd);
-  barC.data.datasets[0].borderColor = stKeys.map((_,i) => i===0 ? '#00d4ff' : 'rgba(0,212,255,.35)');
+  barC.data.datasets[0].borderColor = sk.map((_,i)=>i===0?'#00d4ff':'rgba(0,212,255,.35)');
   barC.update();
 }
 
-// =============================================================
+// ============================================================
 // KPIs
-// =============================================================
+// ============================================================
 function updateKPIs() {
   const src = filtered();
   document.getElementById('kpi-total').textContent = src.length;
-  const allInds = new Set(DATA.map(c => c.industry));
-  document.getElementById('kpi-ind-count').textContent = allInds.size;
-  const sc = {}, ic = {};
+  document.getElementById('kpi-ind-count').textContent = new Set(DATA.map(c=>c.industry)).size;
+  const sc={}, ic={};
   src.forEach(c => {
-    sc[c.state]    = (sc[c.state]    || 0) + 1;
-    ic[c.industry] = (ic[c.industry] || 0) + 1;
+    sc[c.state]    = (sc[c.state]   ||0)+1;
+    ic[c.industry] = (ic[c.industry]||0)+1;
   });
-  const ts = Object.entries(sc).sort((a,b) => b[1]-a[1])[0];
-  const ti = Object.entries(ic).sort((a,b) => b[1]-a[1])[0];
+  const ts = Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
+  const ti = Object.entries(ic).sort((a,b)=>b[1]-a[1])[0];
   if (ts) document.getElementById('kpi-state').textContent = ts[0];
   if (ti) document.getElementById('kpi-ind').textContent   = ti[0];
 }
 
-// =============================================================
+// ============================================================
 // FILTER
-// =============================================================
+// ============================================================
 function setFilter(f, el) {
   curFilter = f;
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
@@ -839,49 +1211,46 @@ function setFilter(f, el) {
   document.getElementById('ai-qs-wrap').style.display = 'block';
 }
 
-// =============================================================
-// RIGHT PANEL — Company Explorer
-// =============================================================
+// ============================================================
+// RIGHT PANEL
+// ============================================================
 function buildSelect() {
   const sel = document.getElementById('csel');
-  // FIX: clear existing options (except placeholder) before re-populating
   while (sel.options.length > 1) sel.remove(1);
-  DATA.forEach((c, i) => {
+  DATA.forEach((c,i) => {
     const o = document.createElement('option');
-    o.value = i;
-    o.textContent = c.name;
+    o.value = i; o.textContent = c.name;
     sel.appendChild(o);
   });
 }
 
 function buildTable() {
   const src = filtered();
-  document.getElementById('tbl-body').innerHTML = src.slice(0,10).map((c,i) => {
-    // FIX: use data-index attribute + onclick handler instead of inline quotes with company name
-    return '<tr style="cursor:pointer" data-idx="' + DATA.indexOf(c) + '" onclick="rowClick(this)">' +
-      '<td class="t-rank">' + String(i+1).padStart(2,'0') + '</td>' +
-      '<td style="font-size:9px;color:var(--text-primary);font-weight:500">' + esc(c.name) + '</td>' +
-      '<td><span class="chip ' + chipClass(c.industry) + '">' + esc(c.industry.substring(0,4)) + '</span></td>' +
-      '<td style="font-size:8px;color:var(--text-muted)">' + esc(c.state) + '</td>' +
-      '</tr>';
-  }).join('');
+  document.getElementById('tbl-body').innerHTML = src.slice(0,10).map((c,i) =>
+    '<tr style="cursor:pointer" data-idx="'+DATA.indexOf(c)+'" onclick="rowClick(this)">'+
+    '<td class="t-rank">'+String(i+1).padStart(2,'0')+'</td>'+
+    '<td style="font-size:9px;color:var(--text-primary);font-weight:500">'+esc(c.name)+'</td>'+
+    '<td><span class="chip '+chipClass(c.industry)+'">'+esc(c.industry.substring(0,4))+'</span></td>'+
+    '<td style="font-size:8px;color:var(--text-muted)">'+esc(c.state)+'</td>'+
+    '</tr>'
+  ).join('');
 }
 
-// Table row click via data attribute — avoids apostrophe-in-name bugs
 function rowClick(tr) {
   const idx = parseInt(tr.getAttribute('data-idx'));
   document.getElementById('csel').value = idx;
   showCompany(idx);
+  // On mobile, switch to explorer tab
+  if (isMobile()) switchTab('explorer');
 }
 
-function showCompany(idx, flyTo = true) {
-  if (idx === '' || idx === undefined || idx === null) return;
-  const c = DATA[parseInt(idx)];
-  if (!c) return;
+function showCompany(idx, flyTo=true) {
+  if (idx===''||idx===undefined||idx===null) return;
+  const c = DATA[parseInt(idx)]; if (!c) return;
 
   document.getElementById('c-profile').style.display = 'block';
-  const initials = c.name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
   const col = indColor(c.industry);
+  const initials = c.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
 
   document.getElementById('p-logo').textContent = initials;
   document.getElementById('p-logo').style.color = col;
@@ -889,53 +1258,47 @@ function showCompany(idx, flyTo = true) {
 
   const b = document.getElementById('p-badge');
   b.textContent = c.industry;
-  b.className = 'chip ' + chipClass(c.industry);
+  b.className = 'chip '+chipClass(c.industry);
   b.style.cssText = 'display:inline-block;margin-top:4px;';
 
-  document.getElementById('p-loc').textContent   = (c.city ? c.city + ', ' : '') + c.state;
-  document.getElementById('p-phone').textContent = c.phone || '—';
-  document.getElementById('p-email').textContent = c.email || '—';
-  document.getElementById('p-web').textContent   = c.web   || '—';
-  document.getElementById('p-desc').textContent  = c.desc  || '';
+  document.getElementById('p-loc').textContent   = (c.city?c.city+', ':'')+c.state;
+  document.getElementById('p-phone').textContent = c.phone||'—';
+  document.getElementById('p-email').textContent = c.email||'—';
+  document.getElementById('p-web').textContent   = c.web||'—';
+  document.getElementById('p-desc').textContent  = c.desc||'';
 
   if (flyTo) {
-    const lat = parseFloat(c.lat), lng = parseFloat(c.lng);
-    if (!isNaN(lat) && !isNaN(lng)) map.flyTo([lat, lng], 10, { duration:1.4 });
+    const lat=parseFloat(c.lat), lng=parseFloat(c.lng);
+    if (!isNaN(lat)&&!isNaN(lng)) map.flyTo([lat,lng],10,{duration:1.4});
   }
 }
 
-function focusCompany(name) {
-  const idx = DATA.findIndex(c => c.name === name);
-  if (idx >= 0) { document.getElementById('csel').value = idx; showCompany(idx); }
-}
-
-// =============================================================
+// ============================================================
 // AI SEARCH
-// =============================================================
+// ============================================================
 function runAI() { quickSearch(document.getElementById('ai-inp').value); }
 
 function quickSearch(q) {
   document.getElementById('ai-inp').value = q;
   if (!q.trim()) return;
-  const words = q.toLowerCase().split(/\s+/).filter(w => w.length > 1);
+  const words = q.toLowerCase().split(/\s+/).filter(w=>w.length>1);
   const res = DATA.filter(c => {
-    const hay = (c.name + ' ' + c.industry + ' ' + c.city + ' ' + c.state + ' ' + c.desc).toLowerCase();
-    return words.some(w => hay.includes(w));
-  }).slice(0, 6);
+    const hay=(c.name+' '+c.industry+' '+c.city+' '+c.state+' '+c.desc).toLowerCase();
+    return words.some(w=>hay.includes(w));
+  }).slice(0,6);
 
-  document.getElementById('ai-qs-wrap').style.display = 'none';
+  document.getElementById('ai-qs-wrap').style.display='none';
   const d = document.getElementById('ai-res');
-
   if (res.length) {
-    d.innerHTML = res.map((c,i) =>
-      '<div class="ai-r" data-idx="' + DATA.indexOf(c) + '" onclick="aiRowClick(this)">' +
-      '<span class="chip ' + chipClass(c.industry) + '">' + esc(c.industry.substring(0,3)) + '</span>' +
-      '<div><div class="ai-r-name">' + esc(c.name) + '</div>' +
-      '<div class="ai-r-meta">' + esc(c.city) + ' &middot; ' + esc(c.state) + '</div></div>' +
+    d.innerHTML = res.map(c =>
+      '<div class="ai-r" data-idx="'+DATA.indexOf(c)+'" onclick="aiRowClick(this)">'+
+      '<span class="chip '+chipClass(c.industry)+'">'+esc(c.industry.substring(0,3))+'</span>'+
+      '<div><div class="ai-r-name">'+esc(c.name)+'</div>'+
+      '<div class="ai-r-meta">'+esc(c.city)+' &middot; '+esc(c.state)+'</div></div>'+
       '</div>'
     ).join('');
   } else {
-    d.innerHTML = '<div style="font-size:9px;color:var(--text-muted);padding:8px 0">No results. Try different keywords.</div>';
+    d.innerHTML='<div style="font-size:9px;color:var(--text-muted);padding:8px 0">No results. Try different keywords.</div>';
   }
 }
 
@@ -945,21 +1308,19 @@ function aiRowClick(el) {
   showCompany(idx);
 }
 
-// =============================================================
-// REFRESH BUTTON — reloads CSV from sheet
-// =============================================================
+// ============================================================
+// REFRESH
+// ============================================================
 async function refreshData() {
   const b = document.querySelector('#header .btn');
-  b.innerHTML = '&#8635; Loading…';
-  b.disabled = true;
+  b.innerHTML='&#8635; Loading…'; b.disabled=true;
   await loadSheetData();
-  b.innerHTML = '&#8635; Refresh';
-  b.disabled = false;
+  b.innerHTML='&#8635; Refresh'; b.disabled=false;
 }
 
-// =============================================================
-// FULL DASHBOARD REBUILD — called after DATA is updated
-// =============================================================
+// ============================================================
+// FULL REBUILD after data load
+// ============================================================
 function refreshDashboard() {
   renderMarkers();
   renderHeat();
@@ -967,9 +1328,8 @@ function refreshDashboard() {
   updateKPIs();
   buildTable();
   buildSelect();
-  // Reset explorer panel
-  document.getElementById('c-profile').style.display = 'none';
-  document.getElementById('csel').value = '';
+  document.getElementById('c-profile').style.display='none';
+  document.getElementById('csel').value='';
 }
 </script>
 </body>
