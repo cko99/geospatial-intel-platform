@@ -480,9 +480,11 @@ function quickSearch(q){
 }
 
 function refreshData(){
-  const b=document.querySelector('.btn');b.textContent='&#8635; Loading…';
-  setTimeout(()=>{updateKPIs();b.innerHTML='&#8635; Refresh';},700);
+  const b=document.querySelector('.btn');
+  b.textContent='↻ Loading…';
+  setTimeout(()=>{updateKPIs();b.innerHTML='↻ Refresh';},700);
 }
+
 function refreshDashboard(){
   renderMarkers();
   renderHeat();
@@ -491,6 +493,10 @@ function refreshDashboard(){
   buildTable();
   buildSelect();
 }
+
+setInterval(()=>{
+  loadSheetData();
+},900000);
 </script>
 </body>
 </html>
