@@ -272,51 +272,36 @@ body{display:flex;flex-direction:column;height:100vh;}
 
 <script>
 // ====================== DATA ======================
-const DATA = [
-  {name:"Aerodyne Group",industry:"Drone",city:"Cyberjaya",state:"Selangor",lat:2.924,lng:101.655,web:"aerodyne.group",phone:"+60 3-8888 0000",email:"info@aerodyne.group",desc:"Global drone technology leader specialising in aerial data analytics and large-scale UAV operations across multiple industries worldwide."},
-  {name:"Map2U Sdn Bhd",industry:"GIS",city:"Kuala Lumpur",state:"WP KL",lat:3.150,lng:101.690,web:"map2u.com.my",phone:"+60 3-2162 2211",email:"info@map2u.com.my",desc:"Leading GIS software and solutions provider delivering enterprise mapping systems for government and corporate clients across Malaysia."},
-  {name:"SmartMap Services",industry:"GIS",city:"Shah Alam",state:"Selangor",lat:3.085,lng:101.533,web:"smartmap.com.my",phone:"+60 3-5511 2288",email:"hello@smartmap.com.my",desc:"Specialised GIS consultancy offering spatial planning, data management, and webGIS platforms for infrastructure development projects."},
-  {name:"Fugro Malaysia",industry:"Hydrography",city:"Kuala Lumpur",state:"WP KL",lat:3.162,lng:101.708,web:"fugro.com",phone:"+60 3-2171 0100",email:"malaysia@fugro.com",desc:"Global geo-data leader providing hydrographic survey services supporting offshore energy and marine infrastructure in Southeast Asia."},
-  {name:"MACRES",industry:"Remote Sensing",city:"Kajang",state:"Selangor",lat:2.994,lng:101.786,web:"macres.gov.my",phone:"+60 3-8926 7777",email:"info@macres.gov.my",desc:"Malaysian Centre for Remote Sensing, the national agency managing satellite imagery acquisition and earth observation data services."},
-  {name:"GeoInfo Services",industry:"GIS",city:"Johor Bahru",state:"Johor",lat:1.493,lng:103.742,web:"geoinfo.com.my",phone:"+60 7-232 8800",email:"geoinfo@geoinfo.com.my",desc:"Premier GIS and geospatial data services company serving southern Malaysia with expertise in urban and rural spatial planning."},
-  {name:"Scan Associates",industry:"Engineering Survey",city:"Kuala Lumpur",state:"WP KL",lat:3.175,lng:101.720,web:"scan.com.my",phone:"+60 3-2694 2400",email:"info@scan.com.my",desc:"Precision engineering survey firm providing 3D laser scanning, BIM integration, and structural survey services for major infrastructure."},
-  {name:"Lidar Malaysia",industry:"Remote Sensing",city:"Petaling Jaya",state:"Selangor",lat:3.107,lng:101.607,web:"lidarmy.com",phone:"+60 3-7960 1188",email:"info@lidarmy.com",desc:"LiDAR data acquisition and processing specialist serving forest management, flood modelling, and urban mapping sectors."},
-  {name:"Hexagon Malaysia",industry:"Engineering Survey",city:"Kuala Lumpur",state:"WP KL",lat:3.148,lng:101.695,web:"hexagon.com",phone:"+60 3-2095 8000",email:"my@hexagon.com",desc:"Technology leader delivering precision measurement, positioning, and survey automation solutions for construction and mining industries."},
-  {name:"TerraGIS Sdn Bhd",industry:"GIS",city:"George Town",state:"Penang",lat:5.415,lng:100.329,web:"terragis.com.my",phone:"+60 4-226 3100",email:"contact@terragis.com.my",desc:"Northern Malaysia GIS specialist offering spatial data infrastructure, webGIS platforms, and government-sector consulting services."},
-  {name:"Nautik Marine Surveys",industry:"Hydrography",city:"Kota Kinabalu",state:"Sabah",lat:5.978,lng:116.072,web:"nautik.com.my",phone:"+60 88-265 300",email:"surveys@nautik.com.my",desc:"Marine hydrographic survey specialist covering Borneo coastal waters, port development, and offshore pipeline route assessments."},
-  {name:"DroneTech Asia",industry:"Drone",city:"Petaling Jaya",state:"Selangor",lat:3.090,lng:101.620,web:"dronetechasia.com",phone:"+60 3-7955 4400",email:"info@dronetechasia.com",desc:"Drone technology integrator for precision agriculture, infrastructure inspection, and emergency response UAV systems across Malaysia."},
-  {name:"SkyMapper MY",industry:"Remote Sensing",city:"Kuching",state:"Sarawak",lat:1.553,lng:110.359,web:"skymapper.com.my",phone:"+60 82-441 200",email:"info@skymapper.com.my",desc:"Airborne and satellite remote sensing company serving forestry, oil palm estate management, and land use mapping in East Malaysia."},
-  {name:"Geodesi Konsult",industry:"Land Survey",city:"Kuala Lumpur",state:"WP KL",lat:3.135,lng:101.670,web:"geodesi.com.my",phone:"+60 3-4041 8000",email:"survey@geodesi.com.my",desc:"Licensed cadastral and land survey consultancy providing boundary demarcation, strata title, and subdivision survey services nationwide."},
-  {name:"Topographic Survey",industry:"Land Survey",city:"Ipoh",state:"Perak",lat:4.598,lng:101.090,web:"toposurvey.com.my",phone:"+60 5-254 7700",email:"info@toposurvey.com.my",desc:"Perak-based topographic survey firm with deep experience in highway design, drainage planning, and utility corridor surveys."},
-  {name:"ANGKASA Remote Sensing",industry:"Remote Sensing",city:"Banting",state:"Selangor",lat:2.828,lng:101.505,web:"angkasa.gov.my",phone:"+60 3-3161 0099",email:"contact@angkasa.gov.my",desc:"National Space Agency earth observation division managing Razak SAT satellite imagery distribution and geospatial analytics services."},
-  {name:"Coastal Survey Bhd",industry:"Hydrography",city:"Kemaman",state:"Terengganu",lat:4.239,lng:103.419,web:"coastalsurvey.com.my",phone:"+60 9-863 5500",email:"ops@coastalsurvey.com.my",desc:"Specialist hydrographic survey firm supporting offshore oil and gas operations along Malaysia's east coast and continental shelf."},
-  {name:"FlightOps Drone",industry:"Drone",city:"Kota Bharu",state:"Kelantan",lat:6.119,lng:102.238,web:"flightops.my",phone:"+60 9-744 2200",email:"fly@flightops.my",desc:"Operational drone service provider for agricultural spraying, terrain mapping, and disaster relief missions in East Coast Malaysia."},
-  {name:"Cadastral Pro MY",industry:"Land Survey",city:"Johor Bahru",state:"Johor",lat:1.462,lng:103.762,web:"cadastralpro.com.my",phone:"+60 7-234 1900",email:"info@cadastralpro.com.my",desc:"Licensed cadastral survey firm registered with JUPEM, specialising in property development, industrial estates, and highway projects."},
-  {name:"NovaSpatial Solutions",industry:"GIS",city:"Kota Kinabalu",state:"Sabah",lat:5.960,lng:116.055,web:"novaspatial.com.my",phone:"+60 88-250 800",email:"info@novaspatial.com.my",desc:"East Malaysia GIS consultancy delivering spatial analysis, environmental monitoring, and digital twin solutions for Sabah state projects."},
-  {name:"GeoSys Sdn Bhd",industry:"GIS",city:"Putrajaya",state:"WP Putrajaya",lat:2.926,lng:101.696,web:"geosys.com.my",phone:"+60 3-8889 1200",email:"info@geosys.com.my",desc:"Federal government GIS and spatial data infrastructure provider supporting national land administration and urban planning agencies."},
-  {name:"AirView Drones",industry:"Drone",city:"Kuala Lumpur",state:"WP KL",lat:3.141,lng:101.686,web:"airview.com.my",phone:"+60 3-2181 9000",email:"ops@airview.com.my",desc:"Urban drone inspection and photogrammetry company delivering high-resolution aerial surveys for construction, utilities, and telecommunications."},
-  {name:"Muara Hydro",industry:"Hydrography",city:"Miri",state:"Sarawak",lat:4.399,lng:113.989,web:"muarahydro.com.my",phone:"+60 85-411 100",email:"info@muarahydro.com.my",desc:"Offshore hydrographic and bathymetric survey company specialising in port and harbour development, dredging, and coastal engineering."},
-  {name:"EarthScan MY",industry:"Remote Sensing",city:"Kuala Lumpur",state:"WP KL",lat:3.155,lng:101.712,web:"earthscan.my",phone:"+60 3-2166 3300",email:"info@earthscan.my",desc:"Multi-source remote sensing analytics provider combining optical, SAR, and LiDAR data for environmental and disaster risk monitoring."},
-  {name:"PrecisePlan Engineering",industry:"Engineering Survey",city:"Kuantan",state:"Pahang",lat:3.807,lng:103.326,web:"preciseplan.com.my",phone:"+60 9-517 2200",email:"info@preciseplan.com.my",desc:"Engineering survey firm serving east coast highway development, slope monitoring, and hydrological survey works across Pahang state."},
-  {name:"Meridian Survey Group",industry:"Land Survey",city:"Alor Setar",state:"Kedah",lat:6.121,lng:100.367,web:"meridiansurvey.com.my",phone:"+60 4-731 8800",email:"info@meridiansurvey.com.my",desc:"Northern Malaysia cadastral and topographic survey group serving agricultural land, plantation, and township development projects."},
-  {name:"SpatialTech MY",industry:"GIS",city:"Cyberjaya",state:"Selangor",lat:2.919,lng:101.649,web:"spatialtech.my",phone:"+60 3-8314 2200",email:"hello@spatialtech.my",desc:"GIS startup delivering cloud-native spatial analytics, real-time dashboards, and open-source geospatial solutions for smart city applications."},
-  {name:"HighAlt UAV",industry:"Drone",city:"Seremban",state:"Negeri Sembilan",lat:2.726,lng:101.938,web:"highalt.com.my",phone:"+60 6-763 4400",email:"info@highalt.com.my",desc:"Fixed-wing UAV operator specialising in long-range mapping, corridor surveys, and disaster assessment operations across Peninsular Malaysia."},
-  {name:"DeltaHydro Services",industry:"Hydrography",city:"Kuching",state:"Sarawak",lat:1.548,lng:110.344,web:"deltahydro.com.my",phone:"+60 82-438 900",email:"ops@deltahydro.com.my",desc:"River bathymetry and flood plain hydrographic survey specialist supporting water resource management and hydropower projects in Sarawak."},
-  {name:"VisionRS Malaysia",industry:"Remote Sensing",city:"George Town",state:"Penang",lat:5.408,lng:100.336,web:"visionrs.com.my",phone:"+60 4-228 4400",email:"contact@visionrs.com.my",desc:"Applied remote sensing company using machine learning on multispectral and hyperspectral imagery for precision agriculture and coastal change detection."},
-  {name:"BasisSurvey Sdn Bhd",industry:"Engineering Survey",city:"Petaling Jaya",state:"Selangor",lat:3.098,lng:101.615,web:"basissurvey.com.my",phone:"+60 3-7960 8800",email:"info@basissurvey.com.my",desc:"Civil engineering survey company providing setting-out, deformation monitoring, and as-built surveys for major infrastructure works in Klang Valley."},
-  {name:"BorneoCarto",industry:"GIS",city:"Sandakan",state:"Sabah",lat:5.839,lng:118.118,web:"borneocarto.com.my",phone:"+60 89-213 500",email:"info@borneocarto.com.my",desc:"Sabah-based GIS and cartography firm producing thematic maps for biodiversity management, forest concessions, and sustainable land use planning."},
-  {name:"SkyBound Aerial",industry:"Drone",city:"Kuala Terengganu",state:"Terengganu",lat:5.329,lng:103.138,web:"skybound.com.my",phone:"+60 9-622 8800",email:"fly@skybound.com.my",desc:"Coastal and marine drone survey operator delivering photogrammetry and thermal inspection services for the oil and gas sector in Terengganu."},
-  {name:"HydroDepth Malaysia",industry:"Hydrography",city:"Johor Bahru",state:"Johor",lat:1.490,lng:103.735,web:"hydrodepth.com.my",phone:"+60 7-233 9900",email:"info@hydrodepth.com.my",desc:"Bathymetric survey and seabed mapping company supporting the Port of Tanjung Pelepas, Johor Port, and southern Straits shipping lanes."},
-  {name:"PixelEarth MY",industry:"Remote Sensing",city:"Cyberjaya",state:"Selangor",lat:2.930,lng:101.660,web:"pixelearth.my",phone:"+60 3-8315 5500",email:"data@pixelearth.my",desc:"Geospatial data company aggregating drone, airborne, and satellite imagery into cloud platforms for urban, agricultural, and environmental monitoring."},
-  {name:"GeoMatics Pro",industry:"Engineering Survey",city:"Kuala Lumpur",state:"WP KL",lat:3.160,lng:101.715,web:"geomaticspro.com.my",phone:"+60 3-2698 1100",email:"info@geomaticspro.com.my",desc:"GNSS and total station survey specialist supporting construction control, tunnelling, and railway alignment works across Malaysia."},
-  {name:"CadastralEdge Sdn Bhd",industry:"Land Survey",city:"Kuching",state:"Sarawak",lat:1.556,lng:110.362,web:"cadastraledge.com.my",phone:"+60 82-440 700",email:"info@cadastraledge.com.my",desc:"Sarawak-based cadastral survey firm handling native customary rights land demarcation, forest reserve boundaries, and township surveys."},
-  {name:"PolarisGIS Sdn Bhd",industry:"GIS",city:"Kuala Lumpur",state:"WP KL",lat:3.168,lng:101.700,web:"polarisgis.com.my",phone:"+60 3-2694 7700",email:"contact@polarisgis.com.my",desc:"Enterprise GIS integrator specialising in ESRI ArcGIS deployment, geodatabase management, and GIS training for government agencies."},
-  {name:"SkySurvey Drones",industry:"Drone",city:"Ipoh",state:"Perak",lat:4.592,lng:101.085,web:"skysurvey.my",phone:"+60 5-255 9900",email:"ops@skysurvey.my",desc:"Multi-rotor and fixed-wing drone survey company serving quarry volume calculations, plantation mapping, and infrastructure corridor surveys in Perak."},
-  {name:"SeaBed Surveys MY",industry:"Hydrography",city:"Labuan",state:"WP Labuan",lat:5.282,lng:115.244,web:"seabed.com.my",phone:"+60 87-412 600",email:"ops@seabed.com.my",desc:"Deep-water hydrographic and sub-bottom profiling survey company supporting oil and gas exploration in the South China Sea from Labuan base."},
-  {name:"Spectrum RS MY",industry:"Remote Sensing",city:"Kota Kinabalu",state:"Sabah",lat:5.974,lng:116.068,web:"spectrumrs.com.my",phone:"+60 88-261 700",email:"info@spectrumrs.com.my",desc:"Multispectral and thermal remote sensing company offering crop health monitoring, deforestation detection, and wildfire risk mapping for Sabah."},
-  {name:"AlignSurvey MY",industry:"Engineering Survey",city:"Putrajaya",state:"WP Putrajaya",lat:2.922,lng:101.691,web:"alignsurvey.com.my",phone:"+60 3-8889 3300",email:"info@alignsurvey.com.my",desc:"Infrastructure alignment survey specialist supporting MRT, LRT, highway, and large-scale government development projects across Malaysia."},
-  {name:"LandMark Survey",industry:"Land Survey",city:"Kota Kinabalu",state:"Sabah",lat:5.966,lng:116.062,web:"landmarksurvey.com.my",phone:"+60 88-258 400",email:"info@landmarksurvey.com.my",desc:"Licensed land surveyor covering Sabah cadastral surveys, native land demarcation, and subdivision of commercial and industrial parcels."},
-];
+let DATA = [];
+
+async function loadSheetData(){
+
+  const url = "https://docs.google.com/spreadsheets/d/e/1Yge8HlHEiQUTazaQ1yy0hYney22MFMYzlMBfjBoWHD8/pub?output=csv";
+
+  const res = await fetch(url);
+  const text = await res.text();
+
+  const rows = text.split("\n").slice(1);
+
+  DATA = rows.map(r=>{
+    const c = r.split(",");
+
+    return {
+      name:c[0],
+      industry:c[1],
+      city:c[2],
+      state:c[3],
+      lat:parseFloat(c[4]),
+      lng:parseFloat(c[5]),
+      web:c[6],
+      phone:c[7],
+      email:c[8],
+      desc:c[9]
+    }
+  });
+
+  refreshDashboard();
+}
 
 const IND_COLOR = {
   'Drone':'#ff4d4d','GIS':'#4dff88','Hydrography':'#4da6ff',
@@ -360,7 +345,9 @@ let bmLayers = {};
 })();
 
 window.addEventListener('load',()=>{
-  initMap(); initCharts(); buildSelect(); buildTable(); updateKPIs();
+  initMap();
+  initCharts();
+  loadSheetData();
 });
 
 function initMap(){
