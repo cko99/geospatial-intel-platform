@@ -294,7 +294,7 @@ body{display:flex;flex-direction:column;height:100vh;}
 // CONFIG — replace with your published Google Sheet CSV URL
 // Sheet must be: File → Share → Publish to web → CSV format
 // =============================================================
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/1Yge8HlHEiQUTazaQ1yy0hYney22MFMYzlMBfjBoWHD8/pub?output=csv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfyM6laDl4zieKhx6YjtG9GlGXFyMPuU-EMbvBuAgJiiPowTTOD0WhY0TmabGm-ibbTQuD1hL__v9X/pub?output=csv";
 
 // Auto-refresh interval in milliseconds (15 minutes)
 const REFRESH_INTERVAL = 15 * 60 * 1000;
@@ -475,35 +475,58 @@ async function loadSheetData() {
   try {
     let text = null;
 
-    // Try direct fetch first (works if Google Sheet is published publicly)
-    // Then try corsproxy.io as fallback (needed sometimes on GitHub Pages)
-    const urls = [
-      https://docs.google.com/spreadsheets/d/e/2PACX-1vTfyM6laDl4zieKhx6YjtG9GlGXFyMPuU-EMbvBuAgJiiPowTTOD0WhY0TmabGm-ibbTQuD1hL__v9X/pub?output=csv,
-      'https://corsproxy.io/?' + encodeURIComponent(https://docs.google.com/spreadsheets/d/e/2PACX-1vTfyM6laDl4zieKhx6YjtG9GlGXFyMPuU-EMbvBuAgJiiPowTTOD0WhY0TmabGm-ibbTQuD1hL__v9X/pub?output=csv)
+    // Multiple CORS proxy fallbacks — GitHub Pages cannot fetch Google Sheets directly.
+    // The browser tries each in order and uses the first that returns valid CSV text.
+    const proxies = [
+      u => u,
+      u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+      u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+      u => 'https://thingproxy.freeboard.io/fetch/' + u,
     ];
 
-    for (const url of urls) {
+    for (const makeUrl of proxies) {
+      const fetchUrl = makeUrl(CSV_URL);
       try {
-        const resp = await fetch(url, { cache: 'no-store' });
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        const resp = await fetch(fetchUrl, { cache:'no-store', signal: ctrl.signal });
+        clearTimeout(timer);
         if (!resp.ok) continue;
         const t = await resp.text();
-        if (t && t.length > 20) { text = t; break; }
-      } catch(e) { /* try next */ }
+        if (t && t.length > 30 && !t.trimStart().startsWith('<')) {
+          text = t;
+          console.log('CSV loaded via:', fetchUrl.substring(0,60));
+          break;
+        }
+      } catch(e) {
+        console.warn('Proxy failed:', fetchUrl.substring(0,60), e.message);
+      }
     }
 
-    if (!text) throw new Error('Could not fetch CSV. Check the sheet is published.');
+    if (!text) throw new Error('All proxies failed. Ensure the sheet is published: File > Share > Publish to web > CSV.');
+
+    // Log first raw line so user can debug column mapping in browser console
+    const firstLine = text.split('\n')[0];
+    console.log('CSV headers detected:', firstLine);
 
     const parsed = parseCSV(text);
-    if (parsed.length === 0) throw new Error('CSV parsed 0 valid rows. Check column headers and coordinates.');
+    if (parsed.length === 0) throw new Error('0 valid rows parsed. Check your sheet has latitude and longitude columns with numeric values. See console for detected headers.');
+    console.log('Sample parsed row:', JSON.stringify(parsed[0]));
 
     DATA = parsed;
     refreshDashboard();
+    console.log('Dashboard loaded:', DATA.length, 'companies');
 
   } catch (err) {
     console.error('loadSheetData error:', err);
-    // Show error state in KPIs instead of breaking silently
     document.getElementById('kpi-total').textContent = 'ERR';
-    document.getElementById('kpi-state').textContent = err.message.substring(0, 12);
+    document.getElementById('kpi-ind-count').textContent = '---';
+    document.getElementById('kpi-state').textContent = '---';
+    document.getElementById('kpi-ind').textContent = '---';
+    document.getElementById('tbl-body').innerHTML =
+      '<tr><td colspan="4" style="color:#ff6060;font-size:9px;padding:10px 7px;line-height:1.8">' +
+      'Error: ' + err.message.replace(/</g,'&lt;') + '<br>' +
+      '<span style="color:var(--text-muted)">Open browser console (F12) for details.</span></td></tr>';
   } finally {
     showLoader(false);
   }
