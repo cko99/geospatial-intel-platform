@@ -582,8 +582,22 @@ function initStarfield() {
 // MAP — all 6 tile layers properly defined
 // =============================================================
 function initMap() {
-  map = L.map('map', { center:[4.2, 109.5], zoom:5, zoomControl:false, preferCanvas:true });
 
+map = L.map('map', { 
+center:[4.2,109.5], 
+zoom:5, 
+zoomControl:false, 
+preferCanvas:true 
+});
+
+// mobile behaviour only
+if (window.innerWidth < 768) {
+
+map.scrollWheelZoom.disable();
+map.gestureHandling.enable();
+
+}
+  
   // 1. Dark (Carto Dark Matter) — default
   bmLayers.dark = L.tileLayer(
     'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
@@ -613,7 +627,8 @@ function initMap() {
       { maxZoom:19, opacity:0.9 }
     )
   ]);
-
+}
+  
   // 5. Train = Carto Light base + OpenRailwayMap overlay
   bmLayers.train = L.layerGroup([
     L.tileLayer(
