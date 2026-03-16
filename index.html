@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
 <title>Geospatial Industry Dashboard — Malaysia</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -10,1326 +10,1489 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ── RESET ────────────────────────────────────────────── */
-*{box-sizing:border-box;margin:0;padding:0}
-
-/* ── CSS VARIABLES ───────────────────────────────────── */
+/* ═══════════════════════════════════════════
+   RESET & VARIABLES
+═══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --glass-border:rgba(100,200,255,.12);
-  --panel-bg:rgba(6,12,24,.92);
-  --accent-cyan:#00d4ff;
-  --accent-green:#00ff9d;
-  --text-primary:#e8f4ff;
-  --text-secondary:rgba(180,210,255,.65);
-  --text-muted:rgba(120,160,200,.45);
+  --bg:#020810;
+  --bg2:rgba(6,14,28,.96);
+  --bg3:rgba(10,20,40,.85);
+  --card:rgba(8,20,44,.9);
+  --card2:rgba(12,26,52,.85);
+  --border:rgba(100,200,255,.1);
+  --border2:rgba(0,180,220,.18);
+  --cyan:#00d4ff;
+  --green:#00ff9d;
+  --amber:#ffb547;
+  --tp:#e8f4ff;
+  --ts:rgba(180,210,255,.65);
+  --tm:rgba(120,160,200,.45);
   --font:'Space Grotesk',sans-serif;
   --mono:'JetBrains Mono',monospace;
-  --header-h:50px;
-  --kpi-h:58px;
-  --fbar-h:36px;
+  --r:10px;
+  --r2:7px;
 }
 
-/* ── BASE ────────────────────────────────────────────── */
-html{height:100%;}
-body{
-  display:flex;flex-direction:column;
-  height:100vh;min-height:0;
-  overflow:hidden;
-  background:#020810;
-  color:var(--text-primary);
-  font-family:var(--font);
-}
-#bg-canvas{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  z-index:0;pointer-events:none;
-}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--tp);}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-/* ── HEADER ──────────────────────────────────────────── */
-#header{
-  position:relative;z-index:200;
+/* ═══════════════════════════════════════════
+   DESKTOP LAYOUT  (769px +)
+═══════════════════════════════════════════ */
+body.desktop{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* ── Desktop Header ── */
+#d-header{
+  position:relative;z-index:200;flex-shrink:0;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 16px;height:var(--header-h);flex-shrink:0;
+  padding:0 16px;height:50px;
   background:rgba(4,10,22,.97);
-  border-bottom:1px solid var(--glass-border);
+  border-bottom:1px solid var(--border);
 }
-.hdr-logo{
-  display:flex;align-items:center;gap:8px;
-  font-size:10px;font-weight:600;color:var(--accent-cyan);
-  letter-spacing:.1em;text-transform:uppercase;
-  white-space:nowrap;
-}
-.logo-box{
-  width:24px;height:24px;flex-shrink:0;
-  background:linear-gradient(135deg,#003d5c,#006080);
-  border:1px solid var(--accent-cyan);border-radius:5px;
-  display:flex;align-items:center;justify-content:center;font-size:12px;
-}
-.hdr-title{
-  font-size:12px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--text-primary);
-  text-align:center;flex:1;padding:0 8px;
-}
-.hdr-title em{color:var(--accent-cyan);font-style:normal;}
-.hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.dot-live{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--accent-green);flex-shrink:0;
-  animation:pulse 2s infinite;
-}
-@keyframes pulse{
-  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,157,.4)}
-  50%{opacity:.7;box-shadow:0 0 0 4px rgba(0,255,157,0)}
-}
-.btn{
-  background:rgba(0,212,255,.08);
-  border:1px solid rgba(0,212,255,.25);
-  color:var(--accent-cyan);border-radius:6px;
-  padding:4px 10px;font-size:9px;
-  font-family:var(--font);cursor:pointer;
-  letter-spacing:.06em;text-transform:uppercase;
-  transition:all .2s;white-space:nowrap;
-}
-.btn:hover{background:rgba(0,212,255,.18);border-color:var(--accent-cyan);}
+.d-logo{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:600;
+  color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;}
+.d-logo-box{width:24px;height:24px;background:linear-gradient(135deg,#003d5c,#006080);
+  border:1px solid var(--cyan);border-radius:5px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;flex-shrink:0;}
+.d-title{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--tp);text-align:center;flex:1;padding:0 8px;}
+.d-title em{color:var(--cyan);font-style:normal;}
+.d-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--green);
+  flex-shrink:0;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,157,.4)}
+  50%{opacity:.7;box-shadow:0 0 0 4px rgba(0,255,157,0)}}
+.btn-sm{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);
+  color:var(--cyan);border-radius:6px;padding:4px 10px;font-size:9px;
+  font-family:var(--font);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;
+  transition:all .2s;white-space:nowrap;}
+.btn-sm:hover{background:rgba(0,212,255,.18);border-color:var(--cyan);}
 
-/* ── KPI BAR ─────────────────────────────────────────── */
-#kpi-bar{
-  position:relative;z-index:100;flex-shrink:0;
+/* ── Desktop KPI bar ── */
+#d-kpi{position:relative;z-index:100;flex-shrink:0;
   display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
-  padding:5px 12px;
-  background:rgba(4,10,22,.85);
-  border-bottom:1px solid var(--glass-border);
-}
-.kpi{
-  background:rgba(0,30,60,.5);
-  border:1px solid rgba(0,150,200,.15);
-  border-radius:7px;padding:6px 10px;
-  display:flex;align-items:center;gap:8px;
-  position:relative;overflow:hidden;
-  transition:border-color .2s;
-}
-.kpi::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent-cyan),transparent);
-  opacity:.35;
-}
-.kpi-ico{font-size:16px;flex-shrink:0;}
-.kpi-v{
-  font-size:16px;font-weight:700;
-  color:var(--text-primary);line-height:1;
-  font-family:var(--mono);
-}
-.kpi-l{
-  font-size:8px;color:var(--text-secondary);
-  letter-spacing:.07em;text-transform:uppercase;margin-top:2px;
-}
+  padding:5px 12px;background:rgba(4,10,22,.85);
+  border-bottom:1px solid var(--border);}
+.d-kpi-card{background:rgba(0,30,60,.5);border:1px solid rgba(0,150,200,.15);
+  border-radius:7px;padding:6px 10px;display:flex;align-items:center;gap:8px;
+  position:relative;overflow:hidden;}
+.d-kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.35;}
+.d-kpi-ico{font-size:16px;flex-shrink:0;}
+.d-kpi-v{font-size:16px;font-weight:700;color:var(--tp);line-height:1;font-family:var(--mono);}
+.d-kpi-l{font-size:8px;color:var(--ts);letter-spacing:.07em;text-transform:uppercase;margin-top:2px;}
 
-/* ── FILTER BAR ──────────────────────────────────────── */
-#fbar{
-  position:relative;z-index:100;flex-shrink:0;
-  display:flex;align-items:center;gap:8px;
-  padding:4px 12px;
-  background:rgba(4,10,22,.8);
-  border-bottom:1px solid var(--glass-border);
-  overflow-x:auto;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
-#fbar::-webkit-scrollbar{display:none;}
-.flbl{
-  font-size:8px;color:var(--text-secondary);
-  text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;
-}
-.pills{display:flex;gap:4px;flex-wrap:nowrap;}
-.pill{
-  padding:3px 9px;border-radius:20px;font-size:8px;font-weight:500;
-  border:1px solid rgba(100,160,255,.2);
-  background:rgba(0,20,50,.5);color:var(--text-secondary);
-  cursor:pointer;transition:all .18s;
-  letter-spacing:.04em;white-space:nowrap;flex-shrink:0;
-}
-.pill:hover{border-color:rgba(0,212,255,.5);color:var(--text-primary);}
-.pill.active{
-  background:rgba(0,212,255,.12);
-  border-color:var(--accent-cyan);color:var(--accent-cyan);
-}
+/* ── Desktop Filter bar ── */
+#d-fbar{position:relative;z-index:100;flex-shrink:0;
+  display:flex;align-items:center;gap:8px;padding:4px 12px;
+  background:rgba(4,10,22,.8);border-bottom:1px solid var(--border);
+  overflow-x:auto;scrollbar-width:none;}
+#d-fbar::-webkit-scrollbar{display:none;}
+.d-flbl{font-size:8px;color:var(--ts);text-transform:uppercase;
+  letter-spacing:.1em;white-space:nowrap;}
+.d-pills{display:flex;gap:4px;}
+.pill{padding:3px 9px;border-radius:20px;font-size:8px;font-weight:500;
+  border:1px solid rgba(100,160,255,.2);background:rgba(0,20,50,.5);color:var(--ts);
+  cursor:pointer;transition:all .18s;letter-spacing:.04em;white-space:nowrap;flex-shrink:0;}
+.pill:hover{border-color:rgba(0,212,255,.5);color:var(--tp);}
+.pill.active{background:rgba(0,212,255,.12);border-color:var(--cyan);color:var(--cyan);}
 
-/* ── MAIN 3-PANEL LAYOUT (desktop) ──────────────────── */
-#main{
-  display:grid;
-  grid-template-columns:238px 1fr 258px;
-  grid-template-rows:1fr;
-  flex:1;min-height:0;
-  position:relative;z-index:50;
-}
+/* ── Desktop 3-column main ── */
+#d-main{display:grid;grid-template-columns:238px 1fr 258px;flex:1;min-height:0;
+  position:relative;z-index:50;}
+.d-panel{background:rgba(6,12,24,.92);border-right:1px solid var(--border);
+  overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;min-height:0;}
+.d-panel:last-child{border-right:none;border-left:1px solid var(--border);}
+.d-panel::-webkit-scrollbar{width:3px;}
+.d-panel::-webkit-scrollbar-thumb{background:rgba(0,212,255,.2);border-radius:2px;}
+.d-sec{padding:10px 12px;border-bottom:1px solid var(--border);}
+.d-sec.grow{flex:1;border-bottom:none;overflow-y:auto;}
+.sec-title{font-size:8px;font-weight:700;color:var(--cyan);text-transform:uppercase;
+  letter-spacing:.15em;display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* ── PANELS ──────────────────────────────────────────── */
-.panel{
-  background:var(--panel-bg);
-  border-right:1px solid var(--glass-border);
-  overflow-y:auto;overflow-x:hidden;
-  display:flex;flex-direction:column;
-  min-height:0;
-}
-.panel:last-child{border-right:none;border-left:1px solid var(--glass-border);}
-.panel::-webkit-scrollbar{width:3px;}
-.panel::-webkit-scrollbar-thumb{background:rgba(0,212,255,.2);border-radius:2px;}
+/* Desktop map panel */
+#d-map-panel{position:relative;overflow:hidden;min-height:0;}
+#d-map{width:100%;height:100%;}
 
-.sec{padding:10px 12px;border-bottom:1px solid var(--glass-border);}
-.sec.grow{flex:1;border-bottom:none;overflow-y:auto;}
-.sec-title{
-  font-size:8px;font-weight:700;color:var(--accent-cyan);
-  text-transform:uppercase;letter-spacing:.15em;
-  display:flex;align-items:center;gap:6px;margin-bottom:8px;
-}
-.sec-title::after{content:'';flex:1;height:1px;background:var(--glass-border);}
+/* ── Desktop right panel ── */
+.d-csel{width:100%;background:rgba(0,20,50,.6);border:1px solid rgba(0,150,200,.2);
+  border-radius:5px;padding:5px 9px;font-size:10px;color:var(--tp);
+  font-family:var(--font);outline:none;cursor:pointer;}
+.d-csel option{background:#050d1f;}
+.d-profile{background:rgba(0,25,55,.4);border:1px solid rgba(0,150,200,.12);
+  border-radius:7px;padding:11px;margin-top:9px;}
+.d-p-logo{width:38px;height:38px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:14px;font-weight:700;margin-bottom:7px;
+  background:rgba(0,40,80,.6);border:1px solid rgba(0,150,200,.2);}
+.d-p-name{font-size:11px;font-weight:600;color:var(--tp);}
+.d-p-detail{display:flex;flex-direction:column;gap:3px;margin-top:8px;}
+.d-row{display:flex;gap:5px;font-size:9px;color:var(--ts);}
+.d-lbl{color:var(--tm);min-width:42px;flex-shrink:0;}
+.d-desc{font-size:9px;color:var(--ts);line-height:1.6;margin-top:7px;
+  padding-top:7px;border-top:1px solid var(--border);}
+.d-ctbl{width:100%;border-collapse:collapse;font-size:9px;}
+.d-ctbl th{color:var(--tm);font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  font-size:8px;padding:4px 7px;border-bottom:1px solid var(--border);text-align:left;}
+.d-ctbl td{padding:5px 7px;border-bottom:1px solid rgba(0,100,150,.06);color:var(--ts);}
+.d-ctbl tr:hover td{background:rgba(0,50,100,.2);}
+.t-rank{color:var(--tm);font-family:var(--mono);font-size:8px;}
 
-/* ── CHARTS ──────────────────────────────────────────── */
-.chart-wrap{position:relative;}
-
-/* ── AI SEARCH ───────────────────────────────────────── */
+/* Desktop AI search */
 .ai-row{display:flex;gap:5px;align-items:center;margin-bottom:7px;}
-.ai-inp{
-  flex:1;background:rgba(0,20,50,.6);
-  border:1px solid rgba(0,150,200,.2);border-radius:5px;
-  padding:5px 9px;font-size:10px;color:var(--text-primary);
-  font-family:var(--font);outline:none;transition:border-color .2s;
-}
-.ai-inp:focus{border-color:var(--accent-cyan);}
-.ai-inp::placeholder{color:var(--text-muted);}
-.ai-go{
-  background:rgba(0,212,255,.1);
-  border:1px solid rgba(0,212,255,.3);
-  color:var(--accent-cyan);border-radius:5px;
-  padding:5px 8px;font-size:11px;cursor:pointer;transition:all .15s;
-}
+.ai-inp{flex:1;background:rgba(0,20,50,.6);border:1px solid rgba(0,150,200,.2);
+  border-radius:5px;padding:5px 9px;font-size:10px;color:var(--tp);
+  font-family:var(--font);outline:none;transition:border-color .2s;}
+.ai-inp:focus{border-color:var(--cyan);}
+.ai-inp::placeholder{color:var(--tm);}
+.ai-go{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);
+  color:var(--cyan);border-radius:5px;padding:5px 8px;font-size:11px;cursor:pointer;}
 .ai-go:hover{background:rgba(0,212,255,.2);}
 .ai-qs{display:flex;flex-direction:column;gap:3px;margin-bottom:7px;}
-.qs-lbl{font-size:8px;color:var(--text-muted);letter-spacing:.06em;margin-bottom:2px;}
-.ai-r{
-  background:rgba(0,30,60,.5);border:1px solid rgba(0,150,200,.15);
-  border-radius:5px;padding:6px 9px;cursor:pointer;
-  display:flex;align-items:center;gap:7px;transition:all .15s;
-}
-.ai-r:hover{border-color:var(--accent-cyan);background:rgba(0,50,90,.5);}
-.ai-r-name{font-size:10px;font-weight:500;color:var(--text-primary);}
-.ai-r-meta{font-size:8px;color:var(--text-secondary);letter-spacing:.04em;}
+.qs-lbl{font-size:8px;color:var(--tm);letter-spacing:.06em;margin-bottom:2px;}
+.ai-r{background:rgba(0,30,60,.5);border:1px solid rgba(0,150,200,.15);
+  border-radius:5px;padding:6px 9px;cursor:pointer;display:flex;align-items:center;
+  gap:7px;transition:all .15s;}
+.ai-r:hover{border-color:var(--cyan);background:rgba(0,50,90,.5);}
+.ai-r-name{font-size:10px;font-weight:500;color:var(--tp);}
+.ai-r-meta{font-size:8px;color:var(--ts);letter-spacing:.04em;}
 
-/* ── CHIPS ───────────────────────────────────────────── */
-.chip{
-  font-size:8px;padding:2px 6px;border-radius:10px;border:1px solid;
-  font-weight:600;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;
-}
+/* Desktop map controls */
+.d-map-ctrls{position:absolute;top:10px;right:10px;z-index:1000;
+  display:flex;flex-direction:column;gap:4px;}
+.bm-btn{background:rgba(4,10,22,.92);border:1px solid var(--border);
+  color:var(--ts);border-radius:5px;padding:4px 9px;font-size:9px;cursor:pointer;
+  font-family:var(--font);letter-spacing:.05em;transition:all .15s;white-space:nowrap;}
+.bm-btn:hover,.bm-btn.active{border-color:var(--cyan);color:var(--cyan);}
+.d-layer-btns{position:absolute;bottom:14px;left:10px;z-index:1000;display:flex;gap:5px;}
+.lay-btn{background:rgba(4,10,22,.92);border:1px solid var(--border);
+  color:var(--ts);border-radius:5px;padding:4px 10px;font-size:9px;cursor:pointer;
+  font-family:var(--font);letter-spacing:.06em;text-transform:uppercase;transition:all .15s;}
+.lay-btn.active{border-color:var(--cyan);color:var(--cyan);}
+
+/* ── Chips ── */
+.chip{font-size:8px;padding:2px 6px;border-radius:10px;border:1px solid;
+  font-weight:600;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;}
 .c-drone{color:#ff4d4d;border-color:rgba(255,77,77,.4);background:rgba(255,77,77,.08);}
 .c-gis{color:#4dff88;border-color:rgba(77,255,136,.4);background:rgba(77,255,136,.08);}
 .c-hydro{color:#4da6ff;border-color:rgba(77,166,255,.4);background:rgba(77,166,255,.08);}
 .c-rs{color:#ff9944;border-color:rgba(255,153,68,.4);background:rgba(255,153,68,.08);}
 .c-eng{color:#cc66ff;border-color:rgba(204,102,255,.4);background:rgba(204,102,255,.08);}
 .c-land{color:#4477ff;border-color:rgba(68,119,255,.4);background:rgba(68,119,255,.08);}
-.c-other{color:#aaaaaa;border-color:rgba(170,170,170,.4);background:rgba(170,170,170,.08);}
+.c-other{color:#aaa;border-color:rgba(170,170,170,.4);background:rgba(170,170,170,.08);}
 
-/* ── MAP PANEL ───────────────────────────────────────── */
-#map-panel{position:relative;overflow:hidden;min-height:0;}
-#map{width:100%;height:100%;}
-.leaflet-container{background:#060e1e!important;}
-.map-ctrls{
-  position:absolute;top:10px;right:10px;z-index:1000;
-  display:flex;flex-direction:column;gap:4px;
-}
-.bm-btn{
-  background:rgba(4,10,22,.92);border:1px solid var(--glass-border);
-  color:var(--text-secondary);border-radius:5px;
-  padding:4px 9px;font-size:9px;cursor:pointer;
-  font-family:var(--font);letter-spacing:.05em;
-  transition:all .15s;white-space:nowrap;
-}
-.bm-btn:hover,.bm-btn.active{border-color:var(--accent-cyan);color:var(--accent-cyan);}
-.layer-btns{
-  position:absolute;bottom:14px;left:10px;z-index:1000;display:flex;gap:5px;
-}
-.lay-btn{
-  background:rgba(4,10,22,.92);border:1px solid var(--glass-border);
-  color:var(--text-secondary);border-radius:5px;
-  padding:4px 10px;font-size:9px;cursor:pointer;
-  font-family:var(--font);letter-spacing:.06em;
-  text-transform:uppercase;transition:all .15s;
-}
-.lay-btn.active{border-color:var(--accent-cyan);color:var(--accent-cyan);}
-
-/* Loading overlay */
-#map-loader{
-  position:absolute;inset:0;z-index:999;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  background:rgba(2,8,16,.8);
-  font-size:11px;color:var(--accent-cyan);
-  letter-spacing:.1em;gap:10px;pointer-events:none;
-}
-#map-loader.hidden{display:none;}
-.loader-ring{
-  width:28px;height:28px;
-  border:2px solid rgba(0,212,255,.2);
-  border-top-color:var(--accent-cyan);border-radius:50%;
-  animation:spin .8s linear infinite;
-}
+/* ── Shared loader / popup ── */
+.map-loader{position:absolute;inset:0;z-index:999;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:rgba(2,8,16,.8);
+  font-size:11px;color:var(--cyan);letter-spacing:.1em;gap:10px;pointer-events:none;}
+.map-loader.hidden{display:none;}
+.loader-ring{width:28px;height:28px;border:2px solid rgba(0,212,255,.2);
+  border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Popups */
 .custom-popup .leaflet-popup-content-wrapper{
-  background:rgba(4,12,28,.97);border:1px solid var(--glass-border);
-  border-radius:9px;box-shadow:0 4px 24px rgba(0,0,0,.6);padding:0;
-}
+  background:rgba(4,12,28,.97);border:1px solid var(--border);
+  border-radius:9px;box-shadow:0 4px 24px rgba(0,0,0,.6);padding:0;}
 .custom-popup .leaflet-popup-tip{background:rgba(4,12,28,.97);}
-.pop{padding:11px 13px;font-family:var(--font);min-width:190px;max-width:240px;}
-.pop-name{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:5px;}
-.pop-row{
-  display:flex;gap:6px;font-size:9px;color:var(--text-secondary);
-  margin:3px 0;align-items:flex-start;
-}
-.pop-row span:first-child{color:var(--text-muted);min-width:50px;flex-shrink:0;}
+.pop{padding:11px 13px;font-family:var(--font);min-width:190px;max-width:260px;}
+.pop-name{font-size:12px;font-weight:600;color:var(--tp);margin-bottom:5px;}
+.pop-row{display:flex;gap:6px;font-size:9px;color:var(--ts);margin:3px 0;align-items:flex-start;}
+.pop-row span:first-child{color:var(--tm);min-width:50px;flex-shrink:0;}
 .pop-row span:last-child{word-break:break-word;}
-.pop-web{
-  display:inline-block;margin-top:8px;padding:3px 9px;border-radius:4px;
+.pop-web{display:inline-block;margin-top:8px;padding:3px 9px;border-radius:4px;
   background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);
-  color:var(--accent-cyan);font-size:8px;letter-spacing:.06em;
-  text-transform:uppercase;text-decoration:none;
-}
+  color:var(--cyan);font-size:8px;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;}
 .pop-web:hover{background:rgba(0,212,255,.18);}
-
-/* ── RIGHT PANEL ─────────────────────────────────────── */
-.csel{
-  width:100%;background:rgba(0,20,50,.6);
-  border:1px solid rgba(0,150,200,.2);border-radius:5px;
-  padding:5px 9px;font-size:10px;color:var(--text-primary);
-  font-family:var(--font);outline:none;cursor:pointer;
-}
-.csel option{background:#050d1f;}
-.c-profile{
-  background:rgba(0,25,55,.4);border:1px solid rgba(0,150,200,.12);
-  border-radius:7px;padding:11px;margin-top:9px;
-}
-.p-logo{
-  width:38px;height:38px;border-radius:7px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:700;margin-bottom:7px;
-  background:rgba(0,40,80,.6);border:1px solid rgba(0,150,200,.2);
-}
-.p-name{font-size:11px;font-weight:600;color:var(--text-primary);}
-.p-detail{display:flex;flex-direction:column;gap:3px;margin-top:8px;}
-.d-row{display:flex;gap:5px;font-size:9px;color:var(--text-secondary);}
-.d-lbl{color:var(--text-muted);min-width:42px;flex-shrink:0;}
-.p-desc{
-  font-size:9px;color:var(--text-secondary);line-height:1.6;
-  margin-top:7px;padding-top:7px;border-top:1px solid var(--glass-border);
-}
-.ctbl{width:100%;border-collapse:collapse;font-size:9px;}
-.ctbl th{
-  color:var(--text-muted);font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;font-size:8px;padding:4px 7px;
-  border-bottom:1px solid var(--glass-border);text-align:left;
-}
-.ctbl td{
-  padding:5px 7px;
-  border-bottom:1px solid rgba(0,100,150,.06);
-  color:var(--text-secondary);
-}
-.ctbl tr:hover td{background:rgba(0,50,100,.2);}
-.t-rank{color:var(--text-muted);font-family:var(--mono);font-size:8px;}
+.leaflet-container{background:#060e1e!important;}
 .leaflet-control-zoom{display:none;}
 
-/* ── MOBILE TAB BAR ──────────────────────────────────── */
-/* Hidden on desktop, shown on mobile */
-#tab-bar{display:none;}
-
-/* ── MOBILE GESTURE HINT ─────────────────────────────── */
-.map-gesture-hint{
-  position:absolute;inset:0;z-index:998;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(2,8,22,.55);pointer-events:none;
-  opacity:0;transition:opacity .4s;
-}
-.map-gesture-hint.show{opacity:1;}
-.map-gesture-hint span{
-  background:rgba(4,12,28,.9);border:1px solid var(--glass-border);
-  color:var(--text-secondary);padding:8px 16px;border-radius:20px;
-  font-size:11px;letter-spacing:.06em;
+/* Desktop tablet */
+@media(min-width:769px) and (max-width:1023px){
+  #d-main{grid-template-columns:200px 1fr 220px;}
 }
 
-/* ==========================================================
-   MOBILE LAYOUT  (≤ 767px)
-   Stack: header → kpi → filter → tab-bar → content panes
-   ========================================================== */
-@media (max-width:767px){
 
-  /* Allow body to scroll on mobile */
-  body{overflow:auto;height:auto;min-height:100vh;}
+/* ═══════════════════════════════════════════
+   MOBILE LAYOUT  (≤ 768px)
+   Everything below here is the full mobile UI.
+═══════════════════════════════════════════ */
+/* Mobile elements hidden on desktop */
+#m-app{display:none;}
 
-  /* Header compact */
-  #header{padding:0 12px;height:44px;}
-  .hdr-logo span{display:none;} /* hide text, keep icon */
-  .hdr-title{font-size:10px;letter-spacing:.06em;}
+@media(max-width:768px){
+  /* Kill desktop layout */
+  body.desktop{display:block;height:auto;overflow:auto;}
+  #d-header,#d-kpi,#d-fbar,#d-main{display:none!important;}
 
-  /* KPI — 2×2 grid */
-  #kpi-bar{
-    grid-template-columns:repeat(2,1fr);
-    gap:5px;padding:6px 10px;
-  }
-  .kpi{padding:8px 10px;border-radius:6px;}
-  .kpi-v{font-size:15px;}
-  .kpi-l{font-size:7px;}
-
-  /* Filter bar — horizontal scroll, no wrap */
-  #fbar{padding:5px 10px;gap:6px;}
-  .flbl{display:none;}  /* hide "Filter Industry" label on small screens */
-
-  /* Remove 3-column grid — use tab-based single column */
-  #main{
-    display:block;
-    flex:none;
-    /* no fixed height — each section sizes itself */
+  /* Show mobile app */
+  #m-app{
+    display:flex;flex-direction:column;
+    min-height:100vh;
+    background:var(--bg);
+    padding-bottom:env(safe-area-inset-bottom,0px);
   }
 
-  /* All panels become full-width blocks, hidden by default */
-  .panel{
-    display:none;
-    width:100%;
-    overflow:visible;
-    border-right:none;border-left:none;
-    border-top:1px solid var(--glass-border);
+  /* ── M: Sticky Header ── */
+  #m-header{
+    position:sticky;top:0;z-index:300;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px;height:52px;flex-shrink:0;
+    background:rgba(4,10,22,.98);
+    border-bottom:1px solid var(--border);
   }
-  .panel.active{display:flex;}
-
-  /* MAP panel special — always a fixed viewport height */
-  #map-panel{
-    display:block;  /* always visible */
-    width:100%;
-    height:55vw;    /* ~55% of viewport width = nice tall rectangle */
-    min-height:260px;
-    max-height:420px;
-    border-top:1px solid var(--glass-border);
+  .m-logo{display:flex;align-items:center;gap:9px;}
+  .m-hamburger{
+    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.18);
+    border-radius:7px;cursor:pointer;color:var(--cyan);font-size:14px;
   }
-  #map{width:100%;height:100%;}
+  .m-logo-name{font-size:12px;font-weight:700;color:var(--cyan);
+    letter-spacing:.1em;text-transform:uppercase;}
+  .m-header-right{display:flex;align-items:center;gap:8px;}
+  .m-refresh-btn{
+    display:flex;align-items:center;gap:5px;
+    background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2);
+    border-radius:7px;padding:6px 11px;
+    color:var(--cyan);font-size:10px;font-family:var(--font);
+    font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+    transition:all .2s;
+  }
+  .m-refresh-btn:hover{background:rgba(0,212,255,.15);}
 
-  /* Map controls — smaller on mobile */
-  .map-ctrls{top:8px;right:8px;gap:3px;}
-  .bm-btn{padding:3px 7px;font-size:8px;}
-  .layer-btns{bottom:10px;left:8px;}
-  .lay-btn{padding:3px 8px;font-size:8px;}
+  /* ── M: Title bar ── */
+  #m-title-bar{
+    padding:9px 16px;
+    background:rgba(6,14,28,.95);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:8px;
+  }
+  .m-title-icon{
+    width:20px;height:20px;background:linear-gradient(135deg,#003d5c,#006080);
+    border:1px solid var(--cyan);border-radius:4px;
+    display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;
+  }
+  .m-title-text{font-size:11px;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--tp);}
+  .m-title-text em{color:var(--cyan);font-style:normal;}
 
-  /* Tab bar */
-  #tab-bar{
-    display:flex;
+  /* ── M: KPI cards horizontal scroll ── */
+  #m-kpi{
+    padding:10px 14px 8px;
+    display:flex;gap:10px;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;flex-shrink:0;
+    background:rgba(4,10,22,.9);
+  }
+  #m-kpi::-webkit-scrollbar{display:none;}
+  .m-kpi-card{
     flex-shrink:0;
-    background:rgba(4,10,22,.97);
-    border-top:1px solid var(--glass-border);
-    border-bottom:1px solid var(--glass-border);
-    position:sticky;top:0;z-index:150;
+    min-width:110px;
+    background:var(--card);
+    border:1px solid var(--border2);
+    border-radius:var(--r);
+    padding:10px 12px;
+    position:relative;overflow:hidden;
   }
-  .tab-btn{
-    flex:1;padding:9px 4px;
-    background:transparent;border:none;
-    color:var(--text-muted);font-size:9px;
-    font-family:var(--font);font-weight:600;
-    letter-spacing:.06em;text-transform:uppercase;
-    cursor:pointer;transition:all .18s;
-    display:flex;flex-direction:column;align-items:center;gap:3px;
-    border-bottom:2px solid transparent;
+  .m-kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.4;}
+  .m-kpi-top{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+  .m-kpi-ico{font-size:14px;}
+  .m-kpi-label{font-size:8px;color:var(--tm);letter-spacing:.07em;text-transform:uppercase;}
+  .m-kpi-value{font-size:20px;font-weight:700;color:var(--tp);font-family:var(--mono);line-height:1;}
+  .m-kpi-sub{font-size:8px;color:var(--ts);margin-top:3px;letter-spacing:.04em;}
+
+  /* ── M: Filter pills ── */
+  #m-fbar{
+    padding:8px 14px;display:flex;gap:6px;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    flex-shrink:0;background:rgba(4,10,22,.85);
+    border-bottom:1px solid var(--border);
   }
-  .tab-btn .tab-icon{font-size:16px;}
-  .tab-btn.active{
-    color:var(--accent-cyan);
-    border-bottom-color:var(--accent-cyan);
-    background:rgba(0,212,255,.05);
+  #m-fbar::-webkit-scrollbar{display:none;}
+  .m-pill{
+    padding:5px 12px;border-radius:20px;font-size:9px;font-weight:600;
+    border:1px solid rgba(100,160,255,.2);background:rgba(0,20,50,.6);
+    color:var(--ts);cursor:pointer;transition:all .18s;
+    letter-spacing:.04em;white-space:nowrap;flex-shrink:0;
+    min-height:30px;display:flex;align-items:center;
+  }
+  .m-pill:hover{border-color:rgba(0,212,255,.5);color:var(--tp);}
+  .m-pill.active{background:rgba(0,212,255,.14);border-color:var(--cyan);color:var(--cyan);}
+
+  /* ── M: Section tabs (Analytics / Companies) ── */
+  #m-tabs{
+    display:flex;flex-shrink:0;
+    background:rgba(4,10,22,.95);
+    border-bottom:1px solid var(--border);
+    padding:0 14px;
+  }
+  .m-tab{
+    padding:11px 16px;font-size:11px;font-weight:600;
+    color:var(--tm);cursor:pointer;letter-spacing:.06em;
+    text-transform:uppercase;border-bottom:2px solid transparent;
+    transition:all .2s;white-space:nowrap;
+  }
+  .m-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+  .m-tab-icons{margin-left:auto;display:flex;gap:8px;align-items:center;}
+  .m-tab-icon-btn{
+    width:30px;height:30px;border-radius:6px;
+    background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.15);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;cursor:pointer;color:var(--ts);transition:all .2s;
+  }
+  .m-tab-icon-btn:hover,.m-tab-icon-btn.active{
+    background:rgba(0,212,255,.15);border-color:var(--cyan);color:var(--cyan);}
+
+  /* ── M: Map container ── */
+  #m-map-wrap{
+    position:relative;flex-shrink:0;
+    height:clamp(260px,55vw,380px);
+    border-bottom:1px solid var(--border);
+  }
+  #m-map{width:100%;height:100%;}
+  #m-map-loader{
+    position:absolute;inset:0;z-index:999;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(2,8,16,.8);font-size:11px;color:var(--cyan);
+    letter-spacing:.1em;gap:10px;pointer-events:none;
+  }
+  #m-map-loader.hidden{display:none;}
+
+  /* Mobile basemap selector pills (top of map) */
+  .m-map-bm{
+    position:absolute;top:8px;right:8px;z-index:1000;
+    display:flex;gap:3px;
+  }
+  .m-bm-btn{
+    background:rgba(4,10,22,.92);border:1px solid rgba(100,200,255,.2);
+    color:var(--ts);border-radius:5px;padding:4px 8px;font-size:8px;
+    cursor:pointer;font-family:var(--font);letter-spacing:.04em;
+    transition:all .15s;white-space:nowrap;
+  }
+  .m-bm-btn.active{border-color:var(--cyan);color:var(--cyan);}
+
+  /* Mobile zoom buttons */
+  .m-map-zoom{
+    position:absolute;right:8px;bottom:12px;z-index:1000;
+    display:flex;flex-direction:column;gap:3px;
+  }
+  .m-zoom-btn{
+    width:32px;height:32px;background:rgba(4,10,22,.92);
+    border:1px solid rgba(100,200,255,.2);border-radius:6px;
+    color:var(--cyan);font-size:16px;display:flex;align-items:center;
+    justify-content:center;cursor:pointer;font-weight:700;transition:all .15s;
+  }
+  .m-zoom-btn:hover{background:rgba(0,212,255,.15);border-color:var(--cyan);}
+
+  /* Heatmap toggle */
+  .m-heat-btn{
+    position:absolute;left:8px;bottom:12px;z-index:1000;
+    display:flex;align-items:center;gap:5px;
+    background:rgba(4,10,22,.92);border:1px solid rgba(100,200,255,.2);
+    border-radius:6px;padding:5px 10px;color:var(--ts);
+    font-size:9px;cursor:pointer;font-family:var(--font);
+    letter-spacing:.05em;text-transform:uppercase;transition:all .15s;
+  }
+  .m-heat-btn.active{border-color:var(--cyan);color:var(--cyan);}
+
+  /* ── M: Content section (scrollable below map) ── */
+  #m-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  #m-content::-webkit-scrollbar{width:2px;}
+  #m-content::-webkit-scrollbar-thumb{background:rgba(0,212,255,.2);border-radius:2px;}
+
+  /* Content pane switching */
+  .m-pane{display:none;}
+  .m-pane.active{display:block;}
+
+  /* ── M: Analytics tab content ── */
+  .m-section{padding:16px 14px;border-bottom:1px solid var(--border);}
+  .m-section:last-child{border-bottom:none;}
+  .m-sec-title{
+    font-size:9px;font-weight:700;color:var(--cyan);
+    text-transform:uppercase;letter-spacing:.15em;
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .m-sec-title-count{
+    font-family:var(--mono);font-size:11px;color:var(--ts);font-weight:400;
   }
 
-  /* Sections inside panels — no fixed heights on mobile */
-  .sec{padding:12px 14px;}
-  .chart-wrap{height:auto !important;}
-  #donut{height:180px !important;}
-  #bar{height:200px !important;}
+  /* Charts side by side on analytics tab */
+  .m-charts-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .m-chart-card{background:var(--card);border:1px solid var(--border2);
+    border-radius:var(--r);padding:12px;}
+  .m-chart-card-title{font-size:8px;font-weight:700;color:var(--ts);
+    text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+  .m-chart-wrap{position:relative;}
 
-  /* Right panel on mobile — full width */
-  #right-panel{border-left:none;}
-  .ctbl td,.ctbl th{padding:6px 8px;}
-}
+  /* Active States bar list */
+  .m-state-row{
+    display:flex;align-items:center;gap:8px;margin-bottom:8px;
+  }
+  .m-state-name{font-size:10px;color:var(--ts);min-width:65px;letter-spacing:.02em;}
+  .m-state-bar-wrap{flex:1;height:6px;background:rgba(0,100,160,.2);border-radius:3px;overflow:hidden;}
+  .m-state-bar{height:100%;background:var(--cyan);border-radius:3px;transition:width .6s ease;}
+  .m-state-count{font-size:10px;color:var(--tm);font-family:var(--mono);min-width:20px;text-align:right;}
 
-/* ── TABLET  768-1023px ───────────────────────────────── */
-@media (min-width:768px) and (max-width:1023px){
-  #main{grid-template-columns:200px 1fr 220px;}
-  .hdr-title{font-size:11px;}
-}
+  /* AI section */
+  .m-ai-input-wrap{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(0,20,50,.7);border:1px solid rgba(0,150,200,.25);
+    border-radius:var(--r);padding:10px 14px;margin-bottom:10px;
+  }
+  .m-ai-icon{font-size:16px;flex-shrink:0;}
+  .m-ai-inp{
+    flex:1;background:transparent;border:none;outline:none;
+    font-size:13px;color:var(--tp);font-family:var(--font);
+  }
+  .m-ai-inp::placeholder{color:var(--tm);}
+  .m-ai-send{
+    width:32px;height:32px;border-radius:8px;flex-shrink:0;
+    background:linear-gradient(135deg,#007a99,#00b4d8);
+    border:none;color:#fff;font-size:14px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .m-suggestion-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .m-suggest{
+    background:rgba(0,30,60,.6);border:1px solid rgba(0,150,200,.2);
+    border-radius:20px;padding:6px 12px;font-size:10px;color:var(--ts);
+    cursor:pointer;transition:all .15s;white-space:nowrap;
+  }
+  .m-suggest:hover{border-color:var(--cyan);color:var(--cyan);}
+  .m-suggest b{color:var(--cyan);}
+
+  /* AI results */
+  #m-ai-res{margin-top:10px;}
+  .m-ai-result{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;margin-bottom:6px;
+    background:var(--card);border:1px solid var(--border2);
+    border-radius:var(--r2);cursor:pointer;transition:all .15s;
+  }
+  .m-ai-result:hover{border-color:var(--cyan);background:rgba(0,40,80,.7);}
+  .m-ai-res-info{flex:1;}
+  .m-ai-res-name{font-size:12px;font-weight:600;color:var(--tp);}
+  .m-ai-res-meta{font-size:10px;color:var(--tm);margin-top:2px;}
+
+  /* ── M: Companies tab ── */
+  .m-company-card{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;
+    border-bottom:1px solid rgba(0,80,130,.15);
+    cursor:pointer;transition:background .15s;
+  }
+  .m-company-card:hover{background:rgba(0,40,80,.3);}
+  .m-company-card:last-child{border-bottom:none;}
+  .m-co-avatar{
+    width:42px;height:42px;border-radius:10px;flex-shrink:0;
+    background:rgba(0,40,80,.8);border:1px solid rgba(0,150,200,.25);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;
+  }
+  .m-co-info{flex:1;min-width:0;}
+  .m-co-name{font-size:12px;font-weight:600;color:var(--tp);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .m-co-sub{font-size:10px;color:var(--tm);margin-top:2px;}
+  .m-co-badge{flex-shrink:0;}
+
+  /* Company detail overlay (slides up when tapped) */
+  #m-company-detail{
+    position:fixed;bottom:0;left:0;right:0;z-index:400;
+    background:rgba(6,14,30,.98);border-top:1px solid var(--border2);
+    border-radius:18px 18px 0 0;
+    padding:0 0 env(safe-area-inset-bottom,16px);
+    transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+    max-height:80vh;overflow-y:auto;
+  }
+  #m-company-detail.open{transform:translateY(0);}
+  .m-detail-handle{
+    width:36px;height:4px;border-radius:2px;background:rgba(100,160,220,.3);
+    margin:12px auto 0;
+  }
+  .m-detail-header{padding:16px 18px 12px;display:flex;align-items:flex-start;gap:12px;
+    border-bottom:1px solid var(--border);}
+  .m-detail-logo{width:48px;height:48px;border-radius:10px;flex-shrink:0;
+    background:rgba(0,40,80,.8);border:1px solid rgba(0,150,200,.25);
+    display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;}
+  .m-detail-title{flex:1;}
+  .m-detail-name{font-size:15px;font-weight:700;color:var(--tp);line-height:1.2;}
+  .m-detail-badge{margin-top:5px;}
+  .m-detail-close{
+    width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;
+    justify-content:center;cursor:pointer;color:var(--ts);font-size:14px;flex-shrink:0;
+  }
+  .m-detail-body{padding:14px 18px;}
+  .m-detail-row{
+    display:flex;gap:8px;font-size:11px;margin-bottom:8px;
+  }
+  .m-detail-lbl{color:var(--tm);min-width:60px;flex-shrink:0;}
+  .m-detail-val{color:var(--ts);}
+  .m-detail-desc{font-size:11px;color:var(--ts);line-height:1.7;
+    margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+  #m-detail-overlay{
+    position:fixed;inset:0;z-index:399;background:rgba(0,0,0,.5);
+    display:none;
+  }
+  #m-detail-overlay.show{display:block;}
+
+  /* ── M: Bottom nav ── */
+  #m-bottom-nav{
+    position:sticky;bottom:0;z-index:300;flex-shrink:0;
+    display:flex;align-items:center;
+    background:rgba(4,10,22,.98);
+    border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .m-nav-btn{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;padding:10px 4px;cursor:pointer;transition:all .2s;
+    border:none;background:transparent;color:var(--tm);
+    font-family:var(--font);
+  }
+  .m-nav-btn.active{color:var(--cyan);}
+  .m-nav-icon{font-size:20px;line-height:1;}
+  .m-nav-label{font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+  .m-nav-search-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;
+  }
+  .m-nav-search-pill{
+    background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);
+    border-radius:22px;padding:8px 20px;color:var(--cyan);
+    font-size:10px;font-weight:600;letter-spacing:.06em;
+    cursor:pointer;transition:all .2s;
+  }
+  .m-nav-search-pill:hover{background:rgba(0,212,255,.2);}
+
+  /* Gesture hint */
+  .m-gesture-hint{
+    position:absolute;inset:0;z-index:998;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(2,8,22,.5);pointer-events:none;
+    opacity:0;transition:opacity .4s;
+  }
+  .m-gesture-hint.show{opacity:1;}
+  .m-gesture-hint span{
+    background:rgba(4,12,28,.92);border:1px solid var(--border);
+    color:var(--ts);padding:8px 16px;border-radius:20px;font-size:11px;
+  }
+}/* end @media 768px */
 </style>
 </head>
-<body>
+<body class="desktop">
 <canvas id="bg-canvas"></canvas>
 
-<!-- HEADER -->
-<div id="header">
-  <div class="hdr-logo">
-    <div class="logo-box">&#127760;</div>
+<!-- ═══════════════════════════════════════════
+     DESKTOP LAYOUT
+═══════════════════════════════════════════ -->
+<div id="d-header">
+  <div class="d-logo">
+    <div class="d-logo-box">🌐</div>
     <span>GeoIntel MY</span>
   </div>
-  <div class="hdr-title"><em>Geospatial</em> Industry Dashboard &mdash; Malaysia</div>
-  <div class="hdr-right">
+  <div class="d-title"><em>Geospatial</em> Industry Dashboard — Malaysia</div>
+  <div class="d-right">
     <div class="dot-live"></div>
-    <span style="font-size:9px;color:var(--text-secondary);letter-spacing:.06em;">LIVE</span>
-    <button class="btn" onclick="refreshData()">&#8635; Refresh</button>
+    <span style="font-size:9px;color:var(--ts);letter-spacing:.06em;">LIVE</span>
+    <button class="btn-sm" onclick="refreshData()">↻ Refresh</button>
   </div>
 </div>
 
-<!-- KPI BAR -->
-<div id="kpi-bar">
-  <div class="kpi">
-    <div class="kpi-ico">&#127970;</div>
-    <div><div class="kpi-v" id="kpi-total">—</div><div class="kpi-l">Total Companies</div></div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-ico">&#128202;</div>
-    <div><div class="kpi-v" id="kpi-ind-count">—</div><div class="kpi-l">Industries</div></div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-ico">&#128205;</div>
-    <div><div class="kpi-v" id="kpi-state" style="font-size:12px">—</div><div class="kpi-l">Top State</div></div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-ico">&#128640;</div>
-    <div><div class="kpi-v" id="kpi-ind" style="font-size:12px">—</div><div class="kpi-l">Top Industry</div></div>
+<div id="d-kpi">
+  <div class="d-kpi-card"><div class="d-kpi-ico">🏢</div>
+    <div><div class="d-kpi-v" id="d-kpi-total">—</div><div class="d-kpi-l">Total Companies</div></div></div>
+  <div class="d-kpi-card"><div class="d-kpi-ico">📊</div>
+    <div><div class="d-kpi-v" id="d-kpi-inds">—</div><div class="d-kpi-l">Industries</div></div></div>
+  <div class="d-kpi-card"><div class="d-kpi-ico">📍</div>
+    <div><div class="d-kpi-v" id="d-kpi-state" style="font-size:12px">—</div><div class="d-kpi-l">Top State</div></div></div>
+  <div class="d-kpi-card"><div class="d-kpi-ico">🚀</div>
+    <div><div class="d-kpi-v" id="d-kpi-ind" style="font-size:12px">—</div><div class="d-kpi-l">Top Industry</div></div></div>
+</div>
+
+<div id="d-fbar">
+  <span class="d-flbl">Filter</span>
+  <div class="d-pills">
+    <div class="pill active" onclick="setFilter('All',this,'d')">All</div>
+    <div class="pill" onclick="setFilter('Drone',this,'d')">Drone</div>
+    <div class="pill" onclick="setFilter('GIS',this,'d')">GIS</div>
+    <div class="pill" onclick="setFilter('Hydrography',this,'d')">Hydrography</div>
+    <div class="pill" onclick="setFilter('Remote Sensing',this,'d')">Remote Sensing</div>
+    <div class="pill" onclick="setFilter('Engineering Survey',this,'d')">Eng. Survey</div>
+    <div class="pill" onclick="setFilter('Land Survey',this,'d')">Land Survey</div>
   </div>
 </div>
 
-<!-- FILTER BAR -->
-<div id="fbar">
-  <span class="flbl">Filter</span>
-  <div class="pills" id="pills">
-    <div class="pill active" onclick="setFilter('All',this)">All</div>
-    <div class="pill" onclick="setFilter('Drone',this)">Drone</div>
-    <div class="pill" onclick="setFilter('GIS',this)">GIS</div>
-    <div class="pill" onclick="setFilter('Hydrography',this)">Hydrography</div>
-    <div class="pill" onclick="setFilter('Remote Sensing',this)">Remote Sensing</div>
-    <div class="pill" onclick="setFilter('Engineering Survey',this)">Eng. Survey</div>
-    <div class="pill" onclick="setFilter('Land Survey',this)">Land Survey</div>
-  </div>
-</div>
-
-<!-- MOBILE TAB BAR (hidden on desktop) -->
-<div id="tab-bar">
-  <button class="tab-btn" onclick="switchTab('charts')" id="tab-charts">
-    <span class="tab-icon">📊</span>Charts
-  </button>
-  <button class="tab-btn active" onclick="switchTab('map')" id="tab-map">
-    <span class="tab-icon">🗺</span>Map
-  </button>
-  <button class="tab-btn" onclick="switchTab('explorer')" id="tab-explorer">
-    <span class="tab-icon">🏢</span>Explorer
-  </button>
-</div>
-
-<!-- MAIN CONTENT -->
-<div id="main">
-
-  <!-- LEFT PANEL — Charts + Search -->
-  <div class="panel" id="left-panel">
-    <div class="sec">
+<div id="d-main">
+  <!-- Left panel -->
+  <div class="d-panel">
+    <div class="d-sec">
       <div class="sec-title">Industry Distribution</div>
-      <div class="chart-wrap" style="height:155px"><canvas id="donut"></canvas></div>
+      <div style="position:relative;height:155px"><canvas id="d-donut"></canvas></div>
     </div>
-    <div class="sec">
+    <div class="d-sec">
       <div class="sec-title">Companies by State</div>
-      <div class="chart-wrap" style="height:175px"><canvas id="bar"></canvas></div>
+      <div style="position:relative;height:175px"><canvas id="d-bar"></canvas></div>
     </div>
-    <div class="sec grow">
+    <div class="d-sec grow">
       <div class="sec-title">Search Companies</div>
       <div class="ai-row">
-        <input class="ai-inp" id="ai-inp"
-          placeholder="e.g. drone mapping, GIS KL…"
-          onkeydown="if(event.key==='Enter')runAI()"/>
-        <button class="ai-go" onclick="runAI()">&#8594;</button>
+        <input class="ai-inp" id="d-ai-inp" placeholder="e.g. drone mapping, GIS KL…"
+          onkeydown="if(event.key==='Enter')dRunAI()"/>
+        <button class="ai-go" onclick="dRunAI()">→</button>
       </div>
-      <div id="ai-qs-wrap">
+      <div id="d-ai-qs-wrap">
         <div class="ai-qs">
           <div class="qs-lbl">QUICK QUERIES</div>
-          <div class="ai-r" onclick="quickSearch('drone mapping')">
-            <span style="font-size:9px;color:var(--text-secondary)">Drone mapping companies &rarr;</span>
-          </div>
-          <div class="ai-r" onclick="quickSearch('GIS Kuala Lumpur')">
-            <span style="font-size:9px;color:var(--text-secondary)">GIS firms in KL &rarr;</span>
-          </div>
-          <div class="ai-r" onclick="quickSearch('remote sensing')">
-            <span style="font-size:9px;color:var(--text-secondary)">Remote sensing companies &rarr;</span>
-          </div>
-          <div class="ai-r" onclick="quickSearch('land survey Johor')">
-            <span style="font-size:9px;color:var(--text-secondary)">Land survey in Johor &rarr;</span>
-          </div>
+          <div class="ai-r" onclick="dQuickSearch('drone mapping')"><span style="font-size:9px;color:var(--ts)">Drone mapping companies →</span></div>
+          <div class="ai-r" onclick="dQuickSearch('GIS Kuala Lumpur')"><span style="font-size:9px;color:var(--ts)">GIS firms in KL →</span></div>
+          <div class="ai-r" onclick="dQuickSearch('remote sensing')"><span style="font-size:9px;color:var(--ts)">Remote sensing →</span></div>
+          <div class="ai-r" onclick="dQuickSearch('land survey Johor')"><span style="font-size:9px;color:var(--ts)">Land survey Johor →</span></div>
         </div>
       </div>
-      <div id="ai-res"></div>
+      <div id="d-ai-res"></div>
     </div>
   </div>
 
-  <!-- MAP PANEL -->
-  <div id="map-panel">
-    <div id="map"></div>
-    <div id="map-loader">
-      <div class="loader-ring"></div>
-      <span>LOADING DATA…</span>
+  <!-- Map -->
+  <div id="d-map-panel">
+    <div id="d-map"></div>
+    <div id="d-map-loader" class="map-loader"><div class="loader-ring"></div><span>LOADING DATA…</span></div>
+    <div class="d-map-ctrls">
+      <button class="bm-btn active" onclick="setBM('dark',this,'d')">Dark</button>
+      <button class="bm-btn" onclick="setBM('osm',this,'d')">OSM</button>
+      <button class="bm-btn" onclick="setBM('satellite',this,'d')">Satellite</button>
+      <button class="bm-btn" onclick="setBM('hybrid',this,'d')">Hybrid</button>
+      <button class="bm-btn" onclick="setBM('train',this,'d')">Train</button>
+      <button class="bm-btn" onclick="setBM('terrain',this,'d')">Terrain</button>
     </div>
-    <!-- Mobile gesture hint -->
-    <div class="map-gesture-hint" id="gesture-hint">
-      <span>&#8678; Use two fingers to pan &amp; zoom &#8680;</span>
-    </div>
-    <div class="map-ctrls">
-      <button class="bm-btn active" onclick="setBM('dark',this)">Dark</button>
-      <button class="bm-btn" onclick="setBM('osm',this)">OSM</button>
-      <button class="bm-btn" onclick="setBM('satellite',this)">Satellite</button>
-      <button class="bm-btn" onclick="setBM('hybrid',this)">Hybrid</button>
-      <button class="bm-btn" onclick="setBM('train',this)">Train</button>
-      <button class="bm-btn" onclick="setBM('terrain',this)">Terrain</button>
-    </div>
-    <div class="layer-btns">
-      <button class="lay-btn active" id="btn-mk" onclick="toggleLayer('markers')">&#9679; Markers</button>
-      <button class="lay-btn" id="btn-ht" onclick="toggleLayer('heat')">&#9830; Heatmap</button>
+    <div class="d-layer-btns">
+      <button class="lay-btn active" id="d-btn-mk" onclick="toggleLayer('markers','d')">● Markers</button>
+      <button class="lay-btn" id="d-btn-ht" onclick="toggleLayer('heat','d')">◈ Heatmap</button>
     </div>
   </div>
 
-  <!-- RIGHT PANEL — Company Explorer -->
-  <div class="panel" id="right-panel">
-    <div class="sec">
+  <!-- Right panel -->
+  <div class="d-panel" id="d-right-panel">
+    <div class="d-sec">
       <div class="sec-title">Company Explorer</div>
-      <select class="csel" id="csel" onchange="showCompany(this.value)">
-        <option value="">&#8212; Select Company &#8212;</option>
+      <select class="d-csel" id="d-csel" onchange="dShowCompany(this.value)">
+        <option value="">— Select Company —</option>
       </select>
-      <div id="c-profile" style="display:none">
-        <div class="c-profile">
-          <div class="p-logo" id="p-logo">AG</div>
-          <div class="p-name" id="p-name"></div>
-          <span class="chip" id="p-badge" style="margin-top:4px;display:inline-block"></span>
-          <div class="p-detail">
-            <div class="d-row"><span class="d-lbl">Location</span><span id="p-loc"></span></div>
-            <div class="d-row"><span class="d-lbl">Phone</span><span id="p-phone"></span></div>
-            <div class="d-row"><span class="d-lbl">Email</span><span id="p-email"></span></div>
-            <div class="d-row"><span class="d-lbl">Web</span>
-              <span id="p-web" style="color:var(--accent-cyan)"></span></div>
+      <div id="d-profile" style="display:none">
+        <div class="d-profile">
+          <div class="d-p-logo" id="d-p-logo"></div>
+          <div class="d-p-name" id="d-p-name"></div>
+          <span class="chip" id="d-p-badge" style="margin-top:4px;display:inline-block"></span>
+          <div class="d-p-detail">
+            <div class="d-row"><span class="d-lbl">Location</span><span id="d-p-loc"></span></div>
+            <div class="d-row"><span class="d-lbl">Phone</span><span id="d-p-phone"></span></div>
+            <div class="d-row"><span class="d-lbl">Email</span><span id="d-p-email"></span></div>
+            <div class="d-row"><span class="d-lbl">Web</span><span id="d-p-web" style="color:var(--cyan)"></span></div>
           </div>
-          <div class="p-desc" id="p-desc"></div>
+          <div class="d-desc" id="d-p-desc"></div>
         </div>
       </div>
     </div>
-    <div class="sec grow">
+    <div class="d-sec grow">
       <div class="sec-title">Top Companies</div>
-      <table class="ctbl">
+      <table class="d-ctbl">
         <thead><tr><th>#</th><th>Company</th><th>Industry</th><th>State</th></tr></thead>
-        <tbody id="tbl-body"></tbody>
+        <tbody id="d-tbl-body"></tbody>
       </table>
     </div>
   </div>
+</div>
 
-</div><!-- /#main -->
+
+<!-- ═══════════════════════════════════════════
+     MOBILE LAYOUT
+═══════════════════════════════════════════ -->
+<div id="m-app">
+
+  <!-- Header -->
+  <div id="m-header">
+    <div class="m-logo">
+      <div class="m-hamburger">☰</div>
+      <div class="m-logo-name">GeoIntel MY</div>
+    </div>
+    <div class="m-header-right">
+      <button class="m-refresh-btn" onclick="refreshData()">↻ Refresh</button>
+    </div>
+  </div>
+
+  <!-- Title bar -->
+  <div id="m-title-bar">
+    <div class="m-title-icon">🌐</div>
+    <div class="m-title-text"><em>Geospatial</em> Industry Dashboard — Malaysia</div>
+  </div>
+
+  <!-- KPI cards -->
+  <div id="m-kpi">
+    <div class="m-kpi-card">
+      <div class="m-kpi-top"><span class="m-kpi-ico">🏢</span><span class="m-kpi-label">Companies</span></div>
+      <div class="m-kpi-value" id="m-kpi-total">—</div>
+    </div>
+    <div class="m-kpi-card">
+      <div class="m-kpi-top"><span class="m-kpi-ico">📊</span><span class="m-kpi-label">Industries</span></div>
+      <div class="m-kpi-value" id="m-kpi-inds">—</div>
+    </div>
+    <div class="m-kpi-card" style="min-width:130px">
+      <div class="m-kpi-top"><span class="m-kpi-ico">📍</span><span class="m-kpi-label">Top State</span></div>
+      <div class="m-kpi-value" id="m-kpi-state" style="font-size:15px">—</div>
+    </div>
+    <div class="m-kpi-card" style="min-width:120px">
+      <div class="m-kpi-top"><span class="m-kpi-ico">🚀</span><span class="m-kpi-label">Top Industry</span></div>
+      <div class="m-kpi-value" id="m-kpi-ind" style="font-size:14px">—</div>
+    </div>
+  </div>
+
+  <!-- Filter pills -->
+  <div id="m-fbar">
+    <div class="m-pill active" onclick="setFilter('All',this,'m')">All</div>
+    <div class="m-pill" onclick="setFilter('Drone',this,'m')">Drone</div>
+    <div class="m-pill" onclick="setFilter('GIS',this,'m')">GIS</div>
+    <div class="m-pill" onclick="setFilter('Hydrography',this,'m')">Hydrography</div>
+    <div class="m-pill" onclick="setFilter('Remote Sensing',this,'m')">Remote Sensing</div>
+    <div class="m-pill" onclick="setFilter('Engineering Survey',this,'m')">Eng. Survey</div>
+    <div class="m-pill" onclick="setFilter('Land Survey',this,'m')">Land Survey</div>
+  </div>
+
+  <!-- Section tabs -->
+  <div id="m-tabs">
+    <div class="m-tab active" id="m-tab-analytics" onclick="switchMTab('analytics')">Analytics</div>
+    <div class="m-tab" id="m-tab-companies" onclick="switchMTab('companies')">Companies</div>
+    <div class="m-tab-icons">
+      <div class="m-tab-icon-btn" title="Filter" onclick="document.getElementById('m-fbar').scrollIntoView({behavior:'smooth'})">⚙</div>
+      <div class="m-tab-icon-btn" id="m-heat-toggle-tab" title="Heatmap" onclick="mToggleHeat()">🌡</div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div id="m-map-wrap">
+    <div id="m-map"></div>
+    <div id="m-map-loader" class="map-loader"><div class="loader-ring"></div><span>LOADING…</span></div>
+    <div class="m-gesture-hint" id="m-gesture-hint"><span>Use two fingers to pan &amp; zoom</span></div>
+    <!-- Basemap selector -->
+    <div class="m-map-bm">
+      <button class="m-bm-btn active" onclick="setBM('dark',this,'m')">Map</button>
+      <button class="m-bm-btn" onclick="setBM('satellite',this,'m')">Satellite</button>
+      <button class="m-bm-btn" onclick="setBM('hybrid',this,'m')">Hybrid</button>
+      <button class="m-bm-btn" onclick="setBM('terrain',this,'m')">Terrain</button>
+    </div>
+    <!-- Zoom buttons -->
+    <div class="m-map-zoom">
+      <div class="m-zoom-btn" onclick="mMap&&mMap.zoomIn()">+</div>
+      <div class="m-zoom-btn" onclick="mMap&&mMap.zoomOut()">−</div>
+    </div>
+    <!-- Heatmap -->
+    <div class="m-heat-btn" id="m-heat-btn" onclick="mToggleHeat()">◈ Heatmap</div>
+  </div>
+
+  <!-- Scrollable content -->
+  <div id="m-content">
+
+    <!-- ANALYTICS PANE -->
+    <div class="m-pane active" id="m-pane-analytics">
+
+      <!-- Charts -->
+      <div class="m-section">
+        <div class="m-charts-row">
+          <div class="m-chart-card">
+            <div class="m-chart-card-title">Industry Distribution</div>
+            <div class="m-chart-wrap" style="height:150px"><canvas id="m-donut"></canvas></div>
+          </div>
+          <div class="m-chart-card">
+            <div class="m-chart-card-title">Active States</div>
+            <div id="m-state-bars"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top companies list in analytics -->
+      <div class="m-section">
+        <div class="m-sec-title">
+          Top Companies
+          <span class="m-sec-title-count" id="m-top-count"></span>
+        </div>
+        <div id="m-top-list"></div>
+      </div>
+
+      <!-- AI Career Assistant -->
+      <div class="m-section">
+        <div class="m-sec-title">AI Career Assistant</div>
+        <div class="m-ai-input-wrap">
+          <span class="m-ai-icon">🔍</span>
+          <input class="m-ai-inp" id="m-ai-inp" placeholder="Ask a question…"
+            onkeydown="if(event.key==='Enter')mRunAI()"/>
+          <button class="m-ai-send" onclick="mRunAI()">→</button>
+        </div>
+        <div class="m-suggestion-chips">
+          <div class="m-suggest" onclick="mQuickSearch('Drone survey Selangor')">Drones survey in <b>Selangor</b>?</div>
+          <div class="m-suggest" onclick="mQuickSearch('Remote Sensing companies')">Companies using <b>Remote Sensing</b></div>
+          <div class="m-suggest" onclick="mQuickSearch('GIS Kuala Lumpur')"><b>GIS</b> in KL</div>
+          <div class="m-suggest" onclick="mQuickSearch('Land Survey Johor')"><b>Land Survey</b> Johor</div>
+        </div>
+        <div id="m-ai-res"></div>
+      </div>
+
+    </div><!-- /analytics pane -->
+
+    <!-- COMPANIES PANE -->
+    <div class="m-pane" id="m-pane-companies">
+      <div id="m-companies-list" style="background:var(--card);border-radius:0;"></div>
+    </div>
+
+  </div><!-- /m-content -->
+
+  <!-- Bottom navigation -->
+  <div id="m-bottom-nav">
+    <button class="m-nav-btn active" id="m-nav-home" onclick="mNavClick('home',this)">
+      <span class="m-nav-icon">🏠</span>
+      <span class="m-nav-label">Home</span>
+    </button>
+    <div class="m-nav-search-btn">
+      <div class="m-nav-search-pill" onclick="document.getElementById('m-ai-inp').focus();switchMTab('analytics')">
+        🔍 Search
+      </div>
+    </div>
+    <button class="m-nav-btn" id="m-nav-menu" onclick="mNavClick('menu',this)">
+      <span class="m-nav-icon">☰</span>
+      <span class="m-nav-label">Menu</span>
+    </button>
+  </div>
+
+</div><!-- /m-app -->
+
+<!-- Company detail slide-up (mobile) -->
+<div id="m-detail-overlay" onclick="mCloseDetail()"></div>
+<div id="m-company-detail">
+  <div class="m-detail-handle"></div>
+  <div class="m-detail-header">
+    <div class="m-detail-logo" id="m-det-logo"></div>
+    <div class="m-detail-title">
+      <div class="m-detail-name" id="m-det-name"></div>
+      <div class="m-detail-badge"><span class="chip" id="m-det-badge"></span></div>
+    </div>
+    <div class="m-detail-close" onclick="mCloseDetail()">✕</div>
+  </div>
+  <div class="m-detail-body">
+    <div class="m-detail-row"><span class="m-detail-lbl">Location</span><span class="m-detail-val" id="m-det-loc"></span></div>
+    <div class="m-detail-row"><span class="m-detail-lbl">Phone</span><span class="m-detail-val" id="m-det-phone"></span></div>
+    <div class="m-detail-row"><span class="m-detail-lbl">Email</span><span class="m-detail-val" id="m-det-email"></span></div>
+    <div class="m-detail-row"><span class="m-detail-lbl">Website</span>
+      <span class="m-detail-val" id="m-det-web" style="color:var(--cyan)"></span></div>
+    <div class="m-detail-desc" id="m-det-desc"></div>
+  </div>
+</div>
 
 <script>
-// ============================================================
+// ═══════════════════════════════════════
 // CONFIG
-// ============================================================
-const CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfyM6laDl4zieKhx6YjtG9GlGXFyMPuU-EMbvBuAgJiiPowTTOD0WhY0TmabGm-ibbTQuD1hL__v9X/pub?gid=0&single=true&output=csv";
+// ═══════════════════════════════════════
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTfyM6laDl4zieKhx6YjtG9GlGXFyMPuU-EMbvBuAgJiiPowTTOD0WhY0TmabGm-ibbTQuD1hL__v9X/pub?gid=0&single=true&output=csv";
+const REFRESH_INTERVAL = 15 * 60 * 1000;
 
-const REFRESH_INTERVAL = 15 * 60 * 1000; // 15 minutes
-
-// ============================================================
+// ═══════════════════════════════════════
 // STATE
-// ============================================================
+// ═══════════════════════════════════════
 let DATA = [];
 let curFilter = 'All';
-let map, mkLayer, htLayer, showMk = true, showHt = false;
-let donutC, barC, curBM = 'dark';
-let bmLayers = {};
-let chartsReady = false;
+let dMap, dMkLayer, dHtLayer, dShowMk=true, dShowHt=false, dBMLayers={}, dCurBM='dark';
+let mMap, mMkLayer, mHtLayer, mShowHt=false, mBMLayers={}, mCurBM='dark';
+let dDonut, dBar, mDonut, chartsReady=false;
 
 const IND_COLOR = {
-  'Drone':              '#ff4d4d',
-  'GIS':                '#4dff88',
-  'Hydrography':        '#4da6ff',
-  'Remote Sensing':     '#ff9944',
-  'Engineering Survey': '#cc66ff',
-  'Land Survey':        '#4477ff',
+  'Drone':'#ff4d4d','GIS':'#4dff88','Hydrography':'#4da6ff',
+  'Remote Sensing':'#ff9944','Engineering Survey':'#cc66ff','Land Survey':'#4477ff'
 };
 const IND_CHIP = {
-  'Drone':              'c-drone',
-  'GIS':                'c-gis',
-  'Hydrography':        'c-hydro',
-  'Remote Sensing':     'c-rs',
-  'Engineering Survey': 'c-eng',
-  'Land Survey':        'c-land',
+  'Drone':'c-drone','GIS':'c-gis','Hydrography':'c-hydro',
+  'Remote Sensing':'c-rs','Engineering Survey':'c-eng','Land Survey':'c-land'
 };
 
-// ============================================================
+// ═══════════════════════════════════════
 // HELPERS
-// ============================================================
-function esc(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function chipClass(ind) { return IND_CHIP[ind] || 'c-other'; }
-function indColor(ind)   { return IND_COLOR[ind] || '#aaaaaa'; }
+// ═══════════════════════════════════════
+const isMobile = ()=>window.innerWidth<=768;
+const esc = s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const chipCls = i=>IND_CHIP[i]||'c-other';
+const indCol  = i=>IND_COLOR[i]||'#aaaaaa';
+const initials= n=>n.trim().split(/\s+/).map(w=>w[0]).join('').substring(0,2).toUpperCase();
 
-// ============================================================
-// MOBILE TAB SWITCHING
-// ============================================================
-const isMobile = () => window.innerWidth < 768;
-
-function switchTab(tab) {
-  if (!isMobile()) return;
-
-  // Update tab buttons
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-
-  // Show/hide panels
-  document.getElementById('left-panel').classList.toggle('active',   tab === 'charts');
-  document.getElementById('right-panel').classList.toggle('active',  tab === 'explorer');
-  // Map panel is always in the DOM but positioned by CSS; just invalidate its size
-  if (tab === 'map') {
-    setTimeout(() => map && map.invalidateSize(), 50);
-  }
-}
-
-// On resize: if switching desktop→mobile or vice versa, reset panel visibility
-function onResize() {
-  if (isMobile()) {
-    // Ensure the active tab's panel is shown
-    const activeTab = document.querySelector('.tab-btn.active');
-    if (activeTab) {
-      const id = activeTab.id.replace('tab-', '');
-      switchTab(id);
-    }
-  } else {
-    // Desktop: show all panels
-    document.getElementById('left-panel').classList.remove('active');
-    document.getElementById('right-panel').classList.remove('active');
-  }
-  if (map) map.invalidateSize();
-}
-window.addEventListener('resize', onResize);
-
-// ============================================================
+// ═══════════════════════════════════════
 // CSV PARSER
-// ============================================================
-function parseCSV(text) {
-  text = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-
-  // Split into logical lines respecting quoted newlines
-  const lines = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    if (ch === '"') {
-      if (inQ && text[i+1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-      cur += ch;
-    } else if (ch === '\n' && !inQ) {
-      lines.push(cur); cur = '';
-    } else { cur += ch; }
+// ═══════════════════════════════════════
+function parseCSV(text){
+  text=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  const lines=[];let cur='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(ch==='"'){if(inQ&&text[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;cur+=ch;}
+    else if(ch==='\n'&&!inQ){lines.push(cur);cur='';}
+    else cur+=ch;
   }
-  if (cur.trim()) lines.push(cur);
-
-  function parseLine(line) {
-    const fields = []; let field = '', inQuote = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') {
-        if (inQuote && line[i+1] === '"') { field += '"'; i++; }
-        else inQuote = !inQuote;
-      } else if (ch === ',' && !inQuote) {
-        fields.push(field.trim()); field = '';
-      } else { field += ch; }
+  if(cur.trim())lines.push(cur);
+  function pl(line){
+    const f=[];let field='',inQ2=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      if(ch==='"'){if(inQ2&&line[i+1]==='"'){field+='"';i++;}else inQ2=!inQ2;}
+      else if(ch===','&&!inQ2){f.push(field.trim());field='';}
+      else field+=ch;
     }
-    fields.push(field.trim());
-    return fields;
+    f.push(field.trim());return f;
   }
-
-  if (lines.length < 2) return [];
-
-  const rawH = parseLine(lines[0]);
-  const headers = rawH.map(h => h.toLowerCase().replace(/[^a-z0-9]/g,''));
-
-  function col(aliases) {
-    for (const a of aliases) {
-      const i = headers.indexOf(a);
-      if (i >= 0) return i;
-    }
-    return -1;
-  }
-
-  const COL = {
-    name:     col(['company','name','companyname']),
-    industry: col(['industry','sector','category','type']),
-    state:    col(['state','negeri','province']),
-    city:     col(['city','bandar','town','municipality']),
-    country:  col(['country','negara']),
-    lat:      col(['latitude','lat']),
-    lng:      col(['longitude','lng','long','lon']),
-    web:      col(['website','web','url','link']),
-    logo:     col(['logo','logourl','icon']),
-    phone:    col(['phone','tel','telephone','contact']),
-    email:    col(['email','emel','mail']),
-    desc:     col(['description','desc','about','summary']),
-  };
-
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const f = parseLine(line);
-
-    const get = (idx, def='') => {
-      if (idx < 0 || idx >= f.length) return def;
-      let v = f[idx];
-      if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1,-1);
-      return v.replace(/""/g,'"').trim() || def;
-    };
-
-    const lat = parseFloat(get(COL.lat));
-    const lng = parseFloat(get(COL.lng));
-    if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) continue;
-
-    const name = get(COL.name);
-    if (!name) continue;
-
-    rows.push({
-      name,
-      industry: get(COL.industry,'Other'),
-      state:    get(COL.state,''),
-      city:     get(COL.city,''),
-      country:  get(COL.country,'Malaysia'),
-      lat, lng,
-      web:      get(COL.web,''),
-      logo:     get(COL.logo,''),
-      phone:    get(COL.phone,''),
-      email:    get(COL.email,''),
-      desc:     get(COL.desc,''),
-    });
+  if(lines.length<2)return[];
+  const hdr=pl(lines[0]).map(h=>h.toLowerCase().replace(/[^a-z0-9]/g,''));
+  const col=a=>{for(const x of a){const i=hdr.indexOf(x);if(i>=0)return i;}return -1;};
+  const COL={name:col(['company','name','companyname']),industry:col(['industry','sector','category','type']),
+    state:col(['state','negeri','province']),city:col(['city','bandar','town','municipality']),
+    country:col(['country','negara']),lat:col(['latitude','lat']),lng:col(['longitude','lng','long','lon']),
+    web:col(['website','web','url','link']),logo:col(['logo','logourl']),
+    phone:col(['phone','tel','telephone','contact']),email:col(['email','emel','mail']),
+    desc:col(['description','desc','about','summary'])};
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const line=lines[i].trim();if(!line)continue;
+    const f=pl(line);
+    const get=(idx,def='')=>{if(idx<0||idx>=f.length)return def;
+      let v=f[idx];if(v.startsWith('"')&&v.endsWith('"'))v=v.slice(1,-1);
+      return v.replace(/""/g,'"').trim()||def;};
+    const lat=parseFloat(get(COL.lat)),lng=parseFloat(get(COL.lng));
+    if(isNaN(lat)||isNaN(lng)||(lat===0&&lng===0))continue;
+    const name=get(COL.name);if(!name)continue;
+    rows.push({name,industry:get(COL.industry,'Other'),state:get(COL.state,''),
+      city:get(COL.city,''),country:get(COL.country,'Malaysia'),lat,lng,
+      web:get(COL.web,''),logo:get(COL.logo,''),phone:get(COL.phone,''),
+      email:get(COL.email,''),desc:get(COL.desc,'')});
   }
   return rows;
 }
 
-// ============================================================
-// CSV FETCH — multi-proxy fallback
-// ============================================================
-async function loadSheetData() {
-  showLoader(true);
-  try {
-    let text = null;
-    const proxies = [
-      u => u,
-      u => 'https://corsproxy.io/?' + encodeURIComponent(u),
-      u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
-      u => 'https://thingproxy.freeboard.io/fetch/' + u,
-    ];
-    for (const makeUrl of proxies) {
-      const fetchUrl = makeUrl(CSV_URL);
-      try {
-        const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), 8000);
-        const resp = await fetch(fetchUrl, { cache:'no-store', signal:ctrl.signal });
-        clearTimeout(timer);
-        if (!resp.ok) continue;
-        const t = await resp.text();
-        if (t && t.length > 30 && !t.trimStart().startsWith('<')) {
-          text = t;
-          console.log('CSV loaded via:', fetchUrl.substring(0,60));
-          break;
-        }
-      } catch(e) {
-        console.warn('Proxy failed:', fetchUrl.substring(0,60), e.message);
-      }
+// ═══════════════════════════════════════
+// CSV FETCH
+// ═══════════════════════════════════════
+async function loadSheetData(){
+  setLoaders(true);
+  try{
+    let text=null;
+    const proxies=[u=>u,u=>'https://corsproxy.io/?'+encodeURIComponent(u),
+      u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u),
+      u=>'https://thingproxy.freeboard.io/fetch/'+u];
+    for(const mk of proxies){
+      const url=mk(CSV_URL);
+      try{
+        const ctrl=new AbortController();
+        const t=setTimeout(()=>ctrl.abort(),8000);
+        const r=await fetch(url,{cache:'no-store',signal:ctrl.signal});
+        clearTimeout(t);
+        if(!r.ok)continue;
+        const txt=await r.text();
+        if(txt&&txt.length>30&&!txt.trimStart().startsWith('<')){text=txt;break;}
+      }catch(e){console.warn('proxy fail',url.substring(0,50),e.message);}
     }
-
-    if (!text) throw new Error(
-      'All proxies failed. Ensure the sheet is published: File → Share → Publish to web → CSV.'
-    );
-
-    console.log('CSV headers:', text.split('\n')[0]);
-    const parsed = parseCSV(text);
-    if (parsed.length === 0) throw new Error(
-      '0 valid rows parsed. Check latitude/longitude columns have numeric values.'
-    );
-
-    DATA = parsed;
-    refreshDashboard();
-    console.log('Loaded', DATA.length, 'companies');
-
-  } catch (err) {
-    console.error('loadSheetData:', err);
-    ['kpi-total','kpi-ind-count'].forEach(id =>
-      document.getElementById(id).textContent = 'ERR'
-    );
-    ['kpi-state','kpi-ind'].forEach(id =>
-      document.getElementById(id).textContent = '—'
-    );
-    document.getElementById('tbl-body').innerHTML =
-      '<tr><td colspan="4" style="color:#ff6060;font-size:9px;padding:10px 7px;line-height:1.9">' +
-      '&#9888; ' + err.message.replace(/</g,'&lt;') +
-      '<br><span style="color:var(--text-muted)">Open F12 console for details.</span></td></tr>';
-  } finally {
-    showLoader(false);
-  }
+    if(!text)throw new Error('All proxies failed. Check sheet is published as CSV.');
+    const parsed=parseCSV(text);
+    if(!parsed.length)throw new Error('0 rows parsed. Check lat/lng columns.');
+    DATA=parsed;
+    rebuildAll();
+    console.log('Loaded',DATA.length,'companies');
+  }catch(err){
+    console.error(err);
+    showError(err.message);
+  }finally{setLoaders(false);}
 }
 
-function showLoader(on) {
-  document.getElementById('map-loader').classList.toggle('hidden', !on);
+function setLoaders(on){
+  document.getElementById('d-map-loader').classList.toggle('hidden',!on);
+  const ml=document.getElementById('m-map-loader');
+  if(ml)ml.classList.toggle('hidden',!on);
+}
+function showError(msg){
+  document.getElementById('d-tbl-body').innerHTML=
+    '<tr><td colspan="4" style="color:#ff6060;font-size:9px;padding:10px 7px">⚠ '+esc(msg)+'</td></tr>';
 }
 
-// ============================================================
+// ═══════════════════════════════════════
 // INIT
-// ============================================================
-window.addEventListener('load', () => {
+// ═══════════════════════════════════════
+window.addEventListener('load',()=>{
   initStarfield();
-  initMap();
+  initDesktopMap();
+  initMobileMap();
   initCharts();
   loadSheetData();
-  setInterval(loadSheetData, REFRESH_INTERVAL);
-  // Set initial mobile tab state
-  if (isMobile()) switchTab('map');
+  setInterval(loadSheetData,REFRESH_INTERVAL);
 });
 
-// ============================================================
+// ═══════════════════════════════════════
 // STARFIELD
-// ============================================================
-function initStarfield() {
-  const cv = document.getElementById('bg-canvas');
-  const cx = cv.getContext('2d');
-  let W, H, stars = [];
-  function init() {
-    W = cv.width = window.innerWidth; H = cv.height = window.innerHeight;
-    stars = [];
-    for (let i = 0; i < 100; i++)
-      stars.push({
-        x: Math.random()*W, y: Math.random()*H,
-        r: Math.random()*1.1+0.2, a: Math.random(),
-        s: (Math.random()*0.004+0.001) * (Math.random()<.5?1:-1),
-      });
-  }
-  function draw() {
-    cx.clearRect(0,0,W,H);
-    cx.fillStyle = '#020810'; cx.fillRect(0,0,W,H);
-    cx.strokeStyle = 'rgba(0,80,180,0.035)'; cx.lineWidth = 1;
-    for (let x=0;x<W;x+=56){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,H);cx.stroke();}
-    for (let y=0;y<H;y+=56){cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke();}
-    stars.forEach(s => {
-      s.a += s.s; if (s.a>1||s.a<0) s.s *= -1;
-      cx.beginPath(); cx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      cx.fillStyle = 'rgba(120,200,255,'+(s.a*0.45)+')'; cx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  init(); draw();
-  window.addEventListener('resize', init);
+// ═══════════════════════════════════════
+function initStarfield(){
+  const cv=document.getElementById('bg-canvas'),cx=cv.getContext('2d');
+  let W,H,stars=[];
+  function init(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;stars=[];
+    for(let i=0;i<100;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.2,a:Math.random(),s:(Math.random()*.004+.001)*(Math.random()<.5?1:-1)});}
+  function draw(){cx.clearRect(0,0,W,H);cx.fillStyle='#020810';cx.fillRect(0,0,W,H);
+    cx.strokeStyle='rgba(0,80,180,.035)';cx.lineWidth=1;
+    for(let x=0;x<W;x+=56){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,H);cx.stroke();}
+    for(let y=0;y<H;y+=56){cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke();}
+    stars.forEach(s=>{s.a+=s.s;if(s.a>1||s.a<0)s.s*=-1;
+      cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      cx.fillStyle='rgba(120,200,255,'+(s.a*.45)+')';cx.fill();});
+    requestAnimationFrame(draw);}
+  init();draw();window.addEventListener('resize',init);
 }
 
-// ============================================================
-// MAP
-// ============================================================
-function initMap() {
-  // FIX: removed the broken map.gestureHandling.enable() call —
-  // that method does not exist in Leaflet without a separate plugin.
-  // Mobile scroll is handled natively by Leaflet's touch events.
-  map = L.map('map', {
-    center: [4.2, 109.5],
-    zoom: 5,
-    zoomControl: false,
-    preferCanvas: true,
-    // Tap delay disabled for snappier mobile taps
-    tapTolerance: 15,
-  });
-
-  // On mobile: disable scroll-wheel zoom so page doesn't get stuck inside map
-  if (isMobile()) {
-    map.scrollWheelZoom.disable();
-  }
-
-  // Show gesture hint briefly on mobile touch
-  const hint = document.getElementById('gesture-hint');
-  let hintTimer;
-  document.getElementById('map').addEventListener('touchstart', () => {
-    clearTimeout(hintTimer);
-    hint.classList.remove('show');
-  }, { passive: true });
-  // Show hint if user tries to scroll the page over the map with 1 finger
-  document.getElementById('map').addEventListener('touchmove', e => {
-    if (e.touches.length === 1) {
-      hint.classList.add('show');
-      clearTimeout(hintTimer);
-      hintTimer = setTimeout(() => hint.classList.remove('show'), 1500);
-    }
-  }, { passive: true });
-
-  // Tile layers
-  bmLayers.dark = L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    { subdomains:'abcd', maxZoom:19 }
-  );
-  bmLayers.osm = L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { subdomains:'abc', maxZoom:19 }
-  );
-  bmLayers.satellite = L.tileLayer(
-    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    { maxZoom:19 }
-  );
-  bmLayers.hybrid = L.layerGroup([
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom:19 }
-    ),
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom:19, opacity:0.9 }
-    ),
-  ]);
-  bmLayers.train = L.layerGroup([
-    L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-      { subdomains:'abcd', maxZoom:19 }
-    ),
-    L.tileLayer(
-      'https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-      { subdomains:'abc', maxZoom:19, opacity:0.85 }
-    ),
-  ]);
-  bmLayers.terrain = L.tileLayer(
-    'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-    { subdomains:'abc', maxZoom:17 }
-  );
-
-  bmLayers.dark.addTo(map);
-  mkLayer = L.layerGroup().addTo(map);
-  htLayer = L.layerGroup();
+// ═══════════════════════════════════════
+// MAP TILE LAYERS (shared factory)
+// ═══════════════════════════════════════
+function makeTileLayers(){
+  return{
+    dark:L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19}),
+    osm:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:'abc',maxZoom:19}),
+    satellite:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),
+    hybrid:L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,opacity:.9})]),
+    train:L.layerGroup([
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19}),
+      L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',{subdomains:'abc',maxZoom:19,opacity:.85})]),
+    terrain:L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{subdomains:'abc',maxZoom:17})
+  };
 }
 
-function setBM(name, btn) {
-  document.querySelectorAll('.bm-btn').forEach(b => b.classList.remove('active'));
+// ═══════════════════════════════════════
+// DESKTOP MAP
+// ═══════════════════════════════════════
+function initDesktopMap(){
+  dMap=L.map('d-map',{center:[4.2,109.5],zoom:5,zoomControl:false,preferCanvas:true});
+  dBMLayers=makeTileLayers();
+  dBMLayers.dark.addTo(dMap);
+  dMkLayer=L.layerGroup().addTo(dMap);
+  dHtLayer=L.layerGroup();
+}
+
+// ═══════════════════════════════════════
+// MOBILE MAP
+// ═══════════════════════════════════════
+function initMobileMap(){
+  const mapEl=document.getElementById('m-map');
+  if(!mapEl)return;
+  mMap=L.map('m-map',{center:[4.2,109.5],zoom:5,zoomControl:false,preferCanvas:true,tapTolerance:15});
+  mMap.scrollWheelZoom.disable();
+  mBMLayers=makeTileLayers();
+  mBMLayers.dark.addTo(mMap);
+  mMkLayer=L.layerGroup().addTo(mMap);
+  mHtLayer=L.layerGroup();
+  // Gesture hint
+  const hint=document.getElementById('m-gesture-hint');
+  let ht;
+  mapEl.addEventListener('touchmove',e=>{
+    if(e.touches.length===1){hint.classList.add('show');clearTimeout(ht);ht=setTimeout(()=>hint.classList.remove('show'),1500);}
+  },{passive:true});
+  mapEl.addEventListener('touchstart',()=>{clearTimeout(ht);hint.classList.remove('show');},{passive:true});
+}
+
+// ═══════════════════════════════════════
+// BASEMAP SWITCHER
+// ═══════════════════════════════════════
+function setBM(name,btn,ctx){
+  const layers=ctx==='d'?dBMLayers:mBMLayers;
+  const map=ctx==='d'?dMap:mMap;
+  const cur=ctx==='d'?dCurBM:mCurBM;
+  const selector=ctx==='d'?'.bm-btn':'.m-bm-btn';
+  document.querySelectorAll(selector).forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  if (bmLayers[curBM]) map.removeLayer(bmLayers[curBM]);
-  curBM = name;
-  bmLayers[name].addTo(map);
+  if(layers[cur])map.removeLayer(layers[cur]);
+  if(ctx==='d')dCurBM=name;else mCurBM=name;
+  layers[name].addTo(map);
 }
 
-// ============================================================
-// MARKERS
-// ============================================================
-function renderMarkers() {
-  mkLayer.clearLayers();
-  filtered().forEach(c => {
-    const lat = parseFloat(c.lat), lng = parseFloat(c.lng);
-    if (isNaN(lat) || isNaN(lng)) return;
+// ═══════════════════════════════════════
+// MARKERS — shared HTML builder
+// ═══════════════════════════════════════
+function buildPopupHTML(c){
+  const webUrl=c.web?(c.web.match(/^https?:\/\//)?c.web:'https://'+c.web):'';
+  return'<div class="pop">'+
+    '<div class="pop-name">'+esc(c.name)+'</div>'+
+    '<div class="pop-row"><span>Industry</span><span>'+esc(c.industry)+'</span></div>'+
+    '<div class="pop-row"><span>Location</span><span>'+esc(c.city)+(c.city&&c.state?', ':'')+esc(c.state)+'</span></div>'+
+    (c.phone?'<div class="pop-row"><span>Phone</span><span>'+esc(c.phone)+'</span></div>':'')+
+    (c.desc?'<div class="pop-row"><span>About</span><span style="color:var(--tm)">'+esc(c.desc.substring(0,90))+(c.desc.length>90?'…':'')+'</span></div>':'')+
+    (webUrl?'<a class="pop-web" href="'+esc(webUrl)+'" target="_blank" rel="noopener">'+esc(c.web)+' ↗</a>':'')+
+    '</div>';
+}
 
-    const col = indColor(c.industry);
-    const icon = L.divIcon({
-      className: '',
-      html: '<div style="width:11px;height:11px;border-radius:50%;background:'+col+
-            ';border:2px solid rgba(255,255,255,0.35);'+
-            'box-shadow:0 0 7px '+col+'99,0 0 14px '+col+'44;cursor:pointer"></div>',
-      iconSize:[11,11], iconAnchor:[5,5],
+function makeIcon(c,size=11){
+  const col=indCol(c.industry);
+  return L.divIcon({className:'',
+    html:'<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+col+
+      ';border:2px solid rgba(255,255,255,.35);box-shadow:0 0 7px '+col+'99,0 0 14px '+col+'44;cursor:pointer"></div>',
+    iconSize:[size,size],iconAnchor:[Math.floor(size/2),Math.floor(size/2)]});
+}
+
+function renderDesktopMarkers(){
+  dMkLayer.clearLayers();
+  filtered().forEach(c=>{
+    const lat=parseFloat(c.lat),lng=parseFloat(c.lng);
+    if(isNaN(lat)||isNaN(lng))return;
+    const mk=L.marker([lat,lng],{icon:makeIcon(c,11),riseOnHover:true});
+    mk.bindPopup(buildPopupHTML(c),{className:'custom-popup',maxWidth:260});
+    mk.on('popupopen',()=>{
+      const idx=DATA.findIndex(d=>d.name===c.name);
+      if(idx>=0){document.getElementById('d-csel').value=idx;dShowCompany(idx,false);}
     });
-
-    const webUrl = c.web ? (c.web.match(/^https?:\/\//) ? c.web : 'https://'+c.web) : '';
-    const popHTML =
-      '<div class="pop">'+
-      '<div class="pop-name">'+esc(c.name)+'</div>'+
-      '<div class="pop-row"><span>Industry</span><span>'+esc(c.industry)+'</span></div>'+
-      '<div class="pop-row"><span>Location</span><span>'+
-        esc(c.city)+(c.city&&c.state?', ':'')+esc(c.state)+'</span></div>'+
-      (c.phone?'<div class="pop-row"><span>Phone</span><span>'+esc(c.phone)+'</span></div>':'')+
-      (c.desc?'<div class="pop-row"><span>About</span><span style="color:var(--text-muted)">'+
-        esc(c.desc.substring(0,90))+(c.desc.length>90?'…':'')+'</span></div>':'')+
-      (webUrl?'<a class="pop-web" href="'+esc(webUrl)+'" target="_blank" rel="noopener">'+
-        esc(c.web)+' &#8599;</a>':'')+
-      '</div>';
-
-    const mk = L.marker([lat,lng], { icon, riseOnHover:true });
-    mk.bindPopup(popHTML, { className:'custom-popup', maxWidth:260 });
-
-    mk.on('popupopen', () => {
-      const idx = DATA.findIndex(d => d.name === c.name);
-      if (idx >= 0) {
-        document.getElementById('csel').value = idx;
-        showCompany(idx, false);
-        // On mobile, auto-switch to explorer tab when a popup opens
-        if (isMobile()) {
-          setTimeout(() => switchTab('explorer'), 400);
-        }
-      }
-    });
-
-    mkLayer.addLayer(mk);
+    dMkLayer.addLayer(mk);
   });
 }
 
-function renderHeat() {
-  htLayer.clearLayers();
-  DATA.forEach(c => {
-    const lat = parseFloat(c.lat), lng = parseFloat(c.lng);
-    if (isNaN(lat)||isNaN(lng)) return;
-    const col = indColor(c.industry);
-    htLayer.addLayer(L.circle([lat,lng], {
-      radius:45000, fillColor:col, fillOpacity:0.07, color:col, weight:0,
-    }));
+function renderMobileMarkers(){
+  if(!mMkLayer)return;
+  mMkLayer.clearLayers();
+  filtered().forEach(c=>{
+    const lat=parseFloat(c.lat),lng=parseFloat(c.lng);
+    if(isNaN(lat)||isNaN(lng))return;
+    // Larger markers on mobile for touch
+    const mk=L.marker([lat,lng],{icon:makeIcon(c,15),riseOnHover:true});
+    mk.bindPopup(buildPopupHTML(c),{className:'custom-popup',maxWidth:280});
+    mk.on('popupopen',()=>mOpenDetail(DATA.findIndex(d=>d.name===c.name)));
+    mMkLayer.addLayer(mk);
   });
 }
 
-function toggleLayer(t) {
-  if (t === 'markers') {
-    showMk = !showMk;
-    document.getElementById('btn-mk').classList.toggle('active', showMk);
-    showMk ? mkLayer.addTo(map) : map.removeLayer(mkLayer);
-  } else {
-    showHt = !showHt;
-    document.getElementById('btn-ht').classList.toggle('active', showHt);
-    showHt ? htLayer.addTo(map) : map.removeLayer(htLayer);
+function renderDesktopHeat(){
+  dHtLayer.clearLayers();
+  DATA.forEach(c=>{
+    const lat=parseFloat(c.lat),lng=parseFloat(c.lng);if(isNaN(lat)||isNaN(lng))return;
+    dHtLayer.addLayer(L.circle([lat,lng],{radius:45000,fillColor:indCol(c.industry),fillOpacity:.07,color:indCol(c.industry),weight:0}));
+  });
+}
+
+function renderMobileHeat(){
+  if(!mHtLayer)return;
+  mHtLayer.clearLayers();
+  DATA.forEach(c=>{
+    const lat=parseFloat(c.lat),lng=parseFloat(c.lng);if(isNaN(lat)||isNaN(lng))return;
+    mHtLayer.addLayer(L.circle([lat,lng],{radius:45000,fillColor:indCol(c.industry),fillOpacity:.07,color:indCol(c.industry),weight:0}));
+  });
+}
+
+function toggleLayer(t,ctx){
+  if(ctx==='d'){
+    if(t==='markers'){dShowMk=!dShowMk;document.getElementById('d-btn-mk').classList.toggle('active',dShowMk);dShowMk?dMkLayer.addTo(dMap):dMap.removeLayer(dMkLayer);}
+    else{dShowHt=!dShowHt;document.getElementById('d-btn-ht').classList.toggle('active',dShowHt);dShowHt?dHtLayer.addTo(dMap):dMap.removeLayer(dHtLayer);}
   }
 }
 
-// ============================================================
+function mToggleHeat(){
+  mShowHt=!mShowHt;
+  const btn=document.getElementById('m-heat-btn');
+  const tBtn=document.getElementById('m-heat-toggle-tab');
+  btn&&btn.classList.toggle('active',mShowHt);
+  tBtn&&tBtn.classList.toggle('active',mShowHt);
+  if(mShowHt)mHtLayer.addTo(mMap);else mMap.removeLayer(mHtLayer);
+}
+
+// ═══════════════════════════════════════
 // CHARTS
-// ============================================================
-function initCharts() {
-  const dCtx = document.getElementById('donut').getContext('2d');
-  const bCtx = document.getElementById('bar').getContext('2d');
+// ═══════════════════════════════════════
+function initCharts(){
+  const dOpts=(labels,data)=>({type:'doughnut',data:{labels,datasets:[{data,
+    backgroundColor:labels.map(k=>indCol(k)+'99'),borderColor:labels.map(k=>indCol(k)),
+    borderWidth:1.5,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'right',labels:{color:'rgba(180,210,255,.6)',font:{size:8,family:'Space Grotesk'},boxWidth:9,padding:6}}},
+    cutout:'64%',animation:{duration:700}}});
 
-  donutC = new Chart(dCtx, {
-    type:'doughnut',
-    data:{ labels:[], datasets:[{
-      data:[], backgroundColor:[], borderColor:[], borderWidth:1.5, hoverOffset:4
-    }]},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{
-        legend:{ position:'right', labels:{
-          color:'rgba(180,210,255,.6)',
-          font:{size:8,family:'Space Grotesk'},
-          boxWidth:9, padding:6,
-        }},
-        tooltip:{ callbacks:{
-          labelColor: c => ({
-            backgroundColor: Object.values(IND_COLOR)[c.dataIndex]||'#aaa',
-            borderColor:'transparent',
-          }),
-        }},
-      },
-      cutout:'64%', animation:{duration:700},
-    },
-  });
+  dDonut=new Chart(document.getElementById('d-donut').getContext('2d'),dOpts([],[]));
+  dBar=new Chart(document.getElementById('d-bar').getContext('2d'),{type:'bar',
+    data:{labels:[],datasets:[{data:[],backgroundColor:'rgba(0,212,255,.16)',borderColor:[],borderWidth:1.5,borderRadius:3,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(0,100,200,.06)',drawBorder:false},ticks:{color:'rgba(180,210,255,.4)',font:{size:8},maxTicksLimit:5},border:{display:false}},
+        y:{grid:{display:false},ticks:{color:'rgba(180,210,255,.6)',font:{size:8}},border:{display:false}}},
+      animation:{duration:500}}});
 
-  barC = new Chart(bCtx, {
-    type:'bar',
-    data:{ labels:[], datasets:[{
-      data:[], backgroundColor:'rgba(0,212,255,.16)',
-      borderColor:[], borderWidth:1.5, borderRadius:3, borderSkipped:false,
-    }]},
-    options:{
-      indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false} },
-      scales:{
-        x:{
-          grid:{color:'rgba(0,100,200,.06)',drawBorder:false},
-          ticks:{color:'rgba(180,210,255,.4)',font:{size:8,family:"'JetBrains Mono',monospace"},maxTicksLimit:5},
-          border:{display:false},
-        },
-        y:{
-          grid:{display:false},
-          ticks:{color:'rgba(180,210,255,.6)',font:{size:8,family:'Space Grotesk'}},
-          border:{display:false},
-        },
-      },
-      animation:{duration:500},
-    },
-  });
-
-  chartsReady = true;
+  mDonut=new Chart(document.getElementById('m-donut').getContext('2d'),dOpts([],[]));
+  chartsReady=true;
 }
 
-function getIndData() {
-  const c = {};
-  (curFilter==='All'?DATA:DATA.filter(x=>x.industry===curFilter))
-    .forEach(x => { c[x.industry] = (c[x.industry]||0)+1; });
-  return c;
-}
-function getStateData() {
-  const c = {};
-  filtered().forEach(x => { c[x.state] = (c[x.state]||0)+1; });
-  return Object.fromEntries(Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,7));
-}
-function filtered() {
-  return curFilter==='All' ? DATA : DATA.filter(c => c.industry===curFilter);
+function updateDesktopCharts(){
+  if(!chartsReady)return;
+  const id=getIndData(),sd=getStateData();
+  const ik=Object.keys(id),sk=Object.keys(sd);
+  dDonut.data.labels=ik;dDonut.data.datasets[0].data=Object.values(id);
+  dDonut.data.datasets[0].backgroundColor=ik.map(k=>indCol(k)+'99');
+  dDonut.data.datasets[0].borderColor=ik.map(k=>indCol(k));dDonut.update();
+  dBar.data.labels=sk;dBar.data.datasets[0].data=Object.values(sd);
+  dBar.data.datasets[0].borderColor=sk.map((_,i)=>i===0?'#00d4ff':'rgba(0,212,255,.35)');dBar.update();
 }
 
-function updateCharts() {
-  if (!chartsReady) return;
-  const id = getIndData(), sd = getStateData();
-  const ik = Object.keys(id);
-  donutC.data.labels = ik;
-  donutC.data.datasets[0].data = Object.values(id);
-  donutC.data.datasets[0].backgroundColor = ik.map(k => indColor(k)+'99');
-  donutC.data.datasets[0].borderColor      = ik.map(k => indColor(k));
-  donutC.update();
-
-  const sk = Object.keys(sd);
-  barC.data.labels = sk;
-  barC.data.datasets[0].data = Object.values(sd);
-  barC.data.datasets[0].borderColor = sk.map((_,i)=>i===0?'#00d4ff':'rgba(0,212,255,.35)');
-  barC.update();
+function updateMobileCharts(){
+  if(!chartsReady)return;
+  const id=getIndData(),sd=getStateData();
+  const ik=Object.keys(id);
+  mDonut.data.labels=ik;mDonut.data.datasets[0].data=Object.values(id);
+  mDonut.data.datasets[0].backgroundColor=ik.map(k=>indCol(k)+'99');
+  mDonut.data.datasets[0].borderColor=ik.map(k=>indCol(k));mDonut.update();
+  // State bars
+  const maxV=Math.max(...Object.values(sd),1);
+  document.getElementById('m-state-bars').innerHTML=Object.entries(sd).map(([s,v])=>
+    `<div class="m-state-row">
+      <span class="m-state-name">${esc(s.substring(0,10))}</span>
+      <div class="m-state-bar-wrap"><div class="m-state-bar" style="width:${Math.round(v/maxV*100)}%"></div></div>
+      <span class="m-state-count">${v}</span>
+    </div>`).join('');
 }
 
-// ============================================================
+// ═══════════════════════════════════════
+// DATA HELPERS
+// ═══════════════════════════════════════
+function filtered(){return curFilter==='All'?DATA:DATA.filter(c=>c.industry===curFilter);}
+function getIndData(){const c={};(curFilter==='All'?DATA:filtered()).forEach(x=>{c[x.industry]=(c[x.industry]||0)+1;});return c;}
+function getStateData(){const c={};filtered().forEach(x=>{c[x.state]=(c[x.state]||0)+1;});
+  return Object.fromEntries(Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,7));}
+
+// ═══════════════════════════════════════
 // KPIs
-// ============================================================
-function updateKPIs() {
-  const src = filtered();
-  document.getElementById('kpi-total').textContent = src.length;
-  document.getElementById('kpi-ind-count').textContent = new Set(DATA.map(c=>c.industry)).size;
-  const sc={}, ic={};
-  src.forEach(c => {
-    sc[c.state]    = (sc[c.state]   ||0)+1;
-    ic[c.industry] = (ic[c.industry]||0)+1;
-  });
-  const ts = Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
-  const ti = Object.entries(ic).sort((a,b)=>b[1]-a[1])[0];
-  if (ts) document.getElementById('kpi-state').textContent = ts[0];
-  if (ti) document.getElementById('kpi-ind').textContent   = ti[0];
+// ═══════════════════════════════════════
+function updateKPIs(){
+  const src=filtered();
+  const n=src.length,ni=new Set(DATA.map(c=>c.industry)).size;
+  const sc={},ic={};
+  src.forEach(c=>{sc[c.state]=(sc[c.state]||0)+1;ic[c.industry]=(ic[c.industry]||0)+1;});
+  const ts=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
+  const ti=Object.entries(ic).sort((a,b)=>b[1]-a[1])[0];
+  // Desktop
+  document.getElementById('d-kpi-total').textContent=n;
+  document.getElementById('d-kpi-inds').textContent=ni;
+  if(ts)document.getElementById('d-kpi-state').textContent=ts[0];
+  if(ti)document.getElementById('d-kpi-ind').textContent=ti[0];
+  // Mobile
+  document.getElementById('m-kpi-total').textContent=n;
+  document.getElementById('m-kpi-inds').textContent=ni;
+  if(ts)document.getElementById('m-kpi-state').textContent=ts[0];
+  if(ti)document.getElementById('m-kpi-ind').textContent=ti[0];
+  // Top count
+  const tc=document.getElementById('m-top-count');
+  if(tc)tc.textContent=src.length;
 }
 
-// ============================================================
+// ═══════════════════════════════════════
 // FILTER
-// ============================================================
-function setFilter(f, el) {
-  curFilter = f;
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  renderMarkers();
-  updateCharts();
-  updateKPIs();
-  buildTable();
-  document.getElementById('ai-res').innerHTML = '';
-  document.getElementById('ai-qs-wrap').style.display = 'block';
-}
-
-// ============================================================
-// RIGHT PANEL
-// ============================================================
-function buildSelect() {
-  const sel = document.getElementById('csel');
-  while (sel.options.length > 1) sel.remove(1);
-  DATA.forEach((c,i) => {
-    const o = document.createElement('option');
-    o.value = i; o.textContent = c.name;
-    sel.appendChild(o);
+// ═══════════════════════════════════════
+function setFilter(f,el,ctx){
+  curFilter=f;
+  // Sync both pill sets
+  document.querySelectorAll('.pill,.m-pill').forEach(p=>p.classList.remove('active'));
+  // Activate matching pills in both bars
+  document.querySelectorAll('.pill,.m-pill').forEach(p=>{
+    if(p.textContent.trim()===el.textContent.trim()||
+       (f==='All'&&p.textContent.trim()==='All'))p.classList.add('active');
   });
+  renderDesktopMarkers();renderMobileMarkers();
+  updateDesktopCharts();updateMobileCharts();
+  updateKPIs();buildDesktopTable();buildMobileTopList();buildMobileCompaniesList();
+  document.getElementById('d-ai-res').innerHTML='';
+  document.getElementById('d-ai-qs-wrap').style.display='block';
+  document.getElementById('m-ai-res').innerHTML='';
 }
 
-function buildTable() {
-  const src = filtered();
-  document.getElementById('tbl-body').innerHTML = src.slice(0,10).map((c,i) =>
-    '<tr style="cursor:pointer" data-idx="'+DATA.indexOf(c)+'" onclick="rowClick(this)">'+
+// ═══════════════════════════════════════
+// DESKTOP — Company Explorer
+// ═══════════════════════════════════════
+function buildDesktopSelect(){
+  const sel=document.getElementById('d-csel');
+  while(sel.options.length>1)sel.remove(1);
+  DATA.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c.name;sel.appendChild(o);});
+}
+
+function buildDesktopTable(){
+  const src=filtered();
+  document.getElementById('d-tbl-body').innerHTML=src.slice(0,10).map((c,i)=>
+    '<tr style="cursor:pointer" data-idx="'+DATA.indexOf(c)+'" onclick="dRowClick(this)">'+
     '<td class="t-rank">'+String(i+1).padStart(2,'0')+'</td>'+
-    '<td style="font-size:9px;color:var(--text-primary);font-weight:500">'+esc(c.name)+'</td>'+
-    '<td><span class="chip '+chipClass(c.industry)+'">'+esc(c.industry.substring(0,4))+'</span></td>'+
-    '<td style="font-size:8px;color:var(--text-muted)">'+esc(c.state)+'</td>'+
-    '</tr>'
-  ).join('');
+    '<td style="font-size:9px;color:var(--tp);font-weight:500">'+esc(c.name)+'</td>'+
+    '<td><span class="chip '+chipCls(c.industry)+'">'+esc(c.industry.substring(0,4))+'</span></td>'+
+    '<td style="font-size:8px;color:var(--tm)">'+esc(c.state)+'</td></tr>').join('');
 }
 
-function rowClick(tr) {
-  const idx = parseInt(tr.getAttribute('data-idx'));
-  document.getElementById('csel').value = idx;
-  showCompany(idx);
-  // On mobile, switch to explorer tab
-  if (isMobile()) switchTab('explorer');
+function dRowClick(tr){
+  const idx=parseInt(tr.getAttribute('data-idx'));
+  document.getElementById('d-csel').value=idx;dShowCompany(idx);
 }
 
-function showCompany(idx, flyTo=true) {
-  if (idx===''||idx===undefined||idx===null) return;
-  const c = DATA[parseInt(idx)]; if (!c) return;
-
-  document.getElementById('c-profile').style.display = 'block';
-  const col = indColor(c.industry);
-  const initials = c.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-
-  document.getElementById('p-logo').textContent = initials;
-  document.getElementById('p-logo').style.color = col;
-  document.getElementById('p-name').textContent = c.name;
-
-  const b = document.getElementById('p-badge');
-  b.textContent = c.industry;
-  b.className = 'chip '+chipClass(c.industry);
-  b.style.cssText = 'display:inline-block;margin-top:4px;';
-
-  document.getElementById('p-loc').textContent   = (c.city?c.city+', ':'')+c.state;
-  document.getElementById('p-phone').textContent = c.phone||'—';
-  document.getElementById('p-email').textContent = c.email||'—';
-  document.getElementById('p-web').textContent   = c.web||'—';
-  document.getElementById('p-desc').textContent  = c.desc||'';
-
-  if (flyTo) {
-    const lat=parseFloat(c.lat), lng=parseFloat(c.lng);
-    if (!isNaN(lat)&&!isNaN(lng)) map.flyTo([lat,lng],10,{duration:1.4});
-  }
+function dShowCompany(idx,flyTo=true){
+  if(idx===''||idx==null)return;
+  const c=DATA[parseInt(idx)];if(!c)return;
+  document.getElementById('d-profile').style.display='block';
+  const col=indCol(c.industry);
+  document.getElementById('d-p-logo').textContent=initials(c.name);
+  document.getElementById('d-p-logo').style.color=col;
+  document.getElementById('d-p-name').textContent=c.name;
+  const b=document.getElementById('d-p-badge');
+  b.textContent=c.industry;b.className='chip '+chipCls(c.industry);b.style.cssText='display:inline-block;margin-top:4px;';
+  document.getElementById('d-p-loc').textContent=(c.city?c.city+', ':'')+c.state;
+  document.getElementById('d-p-phone').textContent=c.phone||'—';
+  document.getElementById('d-p-email').textContent=c.email||'—';
+  document.getElementById('d-p-web').textContent=c.web||'—';
+  document.getElementById('d-p-desc').textContent=c.desc||'';
+  if(flyTo){const lat=parseFloat(c.lat),lng=parseFloat(c.lng);
+    if(!isNaN(lat)&&!isNaN(lng))dMap.flyTo([lat,lng],10,{duration:1.4});}
 }
 
-// ============================================================
-// AI SEARCH
-// ============================================================
-function runAI() { quickSearch(document.getElementById('ai-inp').value); }
-
-function quickSearch(q) {
-  document.getElementById('ai-inp').value = q;
-  if (!q.trim()) return;
-  const words = q.toLowerCase().split(/\s+/).filter(w=>w.length>1);
-  const res = DATA.filter(c => {
-    const hay=(c.name+' '+c.industry+' '+c.city+' '+c.state+' '+c.desc).toLowerCase();
-    return words.some(w=>hay.includes(w));
-  }).slice(0,6);
-
-  document.getElementById('ai-qs-wrap').style.display='none';
-  const d = document.getElementById('ai-res');
-  if (res.length) {
-    d.innerHTML = res.map(c =>
-      '<div class="ai-r" data-idx="'+DATA.indexOf(c)+'" onclick="aiRowClick(this)">'+
-      '<span class="chip '+chipClass(c.industry)+'">'+esc(c.industry.substring(0,3))+'</span>'+
-      '<div><div class="ai-r-name">'+esc(c.name)+'</div>'+
-      '<div class="ai-r-meta">'+esc(c.city)+' &middot; '+esc(c.state)+'</div></div>'+
-      '</div>'
-    ).join('');
-  } else {
-    d.innerHTML='<div style="font-size:9px;color:var(--text-muted);padding:8px 0">No results. Try different keywords.</div>';
-  }
+// ═══════════════════════════════════════
+// MOBILE — Top list & Companies list
+// ═══════════════════════════════════════
+function buildMobileTopList(){
+  const src=filtered();
+  document.getElementById('m-top-list').innerHTML=src.slice(0,10).map((c,i)=>{
+    const col=indCol(c.industry);
+    return`<div class="m-company-card" data-idx="${DATA.indexOf(c)}" onclick="mOpenDetail(parseInt(this.getAttribute('data-idx')))">
+      <div class="m-co-avatar" style="color:${col}">${initials(c.name)}</div>
+      <div class="m-co-info">
+        <div class="m-co-name">${esc(c.name)}</div>
+        <div class="m-co-sub">${esc(c.industry)} · ${esc(c.city||c.state)}</div>
+      </div>
+      <div class="m-co-badge"><span class="chip ${chipCls(c.industry)}">${esc(c.industry.substring(0,3))}</span></div>
+    </div>`;}).join('');
 }
 
-function aiRowClick(el) {
-  const idx = parseInt(el.getAttribute('data-idx'));
-  document.getElementById('csel').value = idx;
-  showCompany(idx);
+function buildMobileCompaniesList(){
+  const src=filtered();
+  document.getElementById('m-companies-list').innerHTML=src.map((c,i)=>{
+    const col=indCol(c.industry);
+    return`<div class="m-company-card" data-idx="${DATA.indexOf(c)}" onclick="mOpenDetail(parseInt(this.getAttribute('data-idx')))">
+      <div class="m-co-avatar" style="color:${col}">${initials(c.name)}</div>
+      <div class="m-co-info">
+        <div class="m-co-name">${esc(c.name)}</div>
+        <div class="m-co-sub">${esc(c.industry)} · ${esc(c.city||'')}${c.city&&c.state?', ':''}${esc(c.state)}</div>
+      </div>
+      <div class="m-co-badge"><span class="chip ${chipCls(c.industry)}">${esc(c.industry.substring(0,3))}</span></div>
+    </div>`;}).join('');
 }
 
-// ============================================================
+function mOpenDetail(idx){
+  if(idx<0||idx>=DATA.length)return;
+  const c=DATA[idx];
+  const col=indCol(c.industry);
+  document.getElementById('m-det-logo').textContent=initials(c.name);
+  document.getElementById('m-det-logo').style.color=col;
+  document.getElementById('m-det-name').textContent=c.name;
+  const b=document.getElementById('m-det-badge');
+  b.textContent=c.industry;b.className='chip '+chipCls(c.industry);
+  document.getElementById('m-det-loc').textContent=(c.city?c.city+', ':'')+c.state;
+  document.getElementById('m-det-phone').textContent=c.phone||'—';
+  document.getElementById('m-det-email').textContent=c.email||'—';
+  document.getElementById('m-det-web').textContent=c.web||'—';
+  document.getElementById('m-det-desc').textContent=c.desc||'';
+  document.getElementById('m-company-detail').classList.add('open');
+  document.getElementById('m-detail-overlay').classList.add('show');
+  // fly map
+  const lat=parseFloat(c.lat),lng=parseFloat(c.lng);
+  if(!isNaN(lat)&&!isNaN(lng)&&mMap)mMap.flyTo([lat,lng],11,{duration:1.2});
+}
+
+function mCloseDetail(){
+  document.getElementById('m-company-detail').classList.remove('open');
+  document.getElementById('m-detail-overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+// MOBILE TAB SWITCHING
+// ═══════════════════════════════════════
+function switchMTab(tab){
+  document.querySelectorAll('.m-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('m-tab-'+tab).classList.add('active');
+  document.querySelectorAll('.m-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('m-pane-'+tab).classList.add('active');
+  if(tab==='analytics'){setTimeout(()=>mMap&&mMap.invalidateSize(),80);}
+}
+
+// ═══════════════════════════════════════
+// MOBILE BOTTOM NAV
+// ═══════════════════════════════════════
+function mNavClick(id,btn){
+  document.querySelectorAll('.m-nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(id==='home'){switchMTab('analytics');document.getElementById('m-content').scrollTop=0;}
+  if(id==='menu'){switchMTab('companies');}
+}
+
+// ═══════════════════════════════════════
+// DESKTOP AI SEARCH
+// ═══════════════════════════════════════
+function dRunAI(){dQuickSearch(document.getElementById('d-ai-inp').value);}
+function dQuickSearch(q){
+  document.getElementById('d-ai-inp').value=q;
+  if(!q.trim())return;
+  const words=q.toLowerCase().split(/\s+/).filter(w=>w.length>1);
+  const res=DATA.filter(c=>{
+    const h=(c.name+' '+c.industry+' '+c.city+' '+c.state+' '+c.desc).toLowerCase();
+    return words.some(w=>h.includes(w));}).slice(0,6);
+  document.getElementById('d-ai-qs-wrap').style.display='none';
+  const d=document.getElementById('d-ai-res');
+  d.innerHTML=res.length?res.map(c=>
+    '<div class="ai-r" data-idx="'+DATA.indexOf(c)+'" onclick="dAiClick(this)">'+
+    '<span class="chip '+chipCls(c.industry)+'">'+esc(c.industry.substring(0,3))+'</span>'+
+    '<div><div class="ai-r-name">'+esc(c.name)+'</div>'+
+    '<div class="ai-r-meta">'+esc(c.city)+' · '+esc(c.state)+'</div></div></div>').join(''):
+    '<div style="font-size:9px;color:var(--tm);padding:8px 0">No results.</div>';
+}
+function dAiClick(el){const idx=parseInt(el.getAttribute('data-idx'));
+  document.getElementById('d-csel').value=idx;dShowCompany(idx);}
+
+// ═══════════════════════════════════════
+// MOBILE AI SEARCH
+// ═══════════════════════════════════════
+function mRunAI(){mQuickSearch(document.getElementById('m-ai-inp').value);}
+function mQuickSearch(q){
+  document.getElementById('m-ai-inp').value=q;
+  if(!q.trim())return;
+  const words=q.toLowerCase().split(/\s+/).filter(w=>w.length>1);
+  const res=DATA.filter(c=>{
+    const h=(c.name+' '+c.industry+' '+c.city+' '+c.state+' '+c.desc).toLowerCase();
+    return words.some(w=>h.includes(w));}).slice(0,8);
+  const d=document.getElementById('m-ai-res');
+  d.innerHTML=res.length?res.map(c=>
+    `<div class="m-ai-result" data-idx="${DATA.indexOf(c)}" onclick="mOpenDetail(parseInt(this.getAttribute('data-idx')))">
+      <div style="width:36px;height:36px;border-radius:8px;background:rgba(0,40,80,.8);
+        border:1px solid rgba(0,150,200,.2);display:flex;align-items:center;
+        justify-content:center;font-size:13px;font-weight:700;color:${indCol(c.industry)};flex-shrink:0">
+        ${initials(c.name)}</div>
+      <div class="m-ai-res-info">
+        <div class="m-ai-res-name">${esc(c.name)}</div>
+        <div class="m-ai-res-meta">${esc(c.industry)} · ${esc(c.city||c.state)}</div>
+      </div>
+      <span class="chip ${chipCls(c.industry)}">${esc(c.industry.substring(0,3))}</span>
+    </div>`).join(''):
+    '<div style="font-size:11px;color:var(--tm);padding:10px 0">No results. Try different keywords.</div>';
+}
+
+// ═══════════════════════════════════════
 // REFRESH
-// ============================================================
-async function refreshData() {
-  const b = document.querySelector('#header .btn');
-  b.innerHTML='&#8635; Loading…'; b.disabled=true;
+// ═══════════════════════════════════════
+async function refreshData(){
+  const btns=document.querySelectorAll('.btn-sm,.m-refresh-btn');
+  btns.forEach(b=>{b.textContent='↻ Loading…';b.disabled=true;});
   await loadSheetData();
-  b.innerHTML='&#8635; Refresh'; b.disabled=false;
+  btns.forEach(b=>{b.innerHTML='↻ Refresh';b.disabled=false;});
 }
 
-// ============================================================
-// FULL REBUILD after data load
-// ============================================================
-function refreshDashboard() {
-  renderMarkers();
-  renderHeat();
-  updateCharts();
+// ═══════════════════════════════════════
+// FULL REBUILD
+// ═══════════════════════════════════════
+function rebuildAll(){
+  renderDesktopMarkers();renderMobileMarkers();
+  renderDesktopHeat();renderMobileHeat();
+  updateDesktopCharts();updateMobileCharts();
   updateKPIs();
-  buildTable();
-  buildSelect();
-  document.getElementById('c-profile').style.display='none';
-  document.getElementById('csel').value='';
+  buildDesktopTable();buildDesktopSelect();
+  buildMobileTopList();buildMobileCompaniesList();
+  document.getElementById('d-profile').style.display='none';
+  document.getElementById('d-csel').value='';
+  // Invalidate map sizes after rebuild
+  setTimeout(()=>{if(dMap)dMap.invalidateSize();if(mMap)mMap.invalidateSize();},100);
 }
 </script>
 </body>
