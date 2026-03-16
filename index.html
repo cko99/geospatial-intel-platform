@@ -483,6 +483,14 @@ function refreshData(){
   const b=document.querySelector('.btn');b.textContent='&#8635; Loading…';
   setTimeout(()=>{updateKPIs();b.innerHTML='&#8635; Refresh';},700);
 }
+function refreshDashboard(){
+  renderMarkers();
+  renderHeat();
+  updateCharts();
+  updateKPIs();
+  buildTable();
+  buildSelect();
+}
 </script>
 </body>
 </html>
